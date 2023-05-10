@@ -1,0 +1,18 @@
+{
+  "devDependencies": {
+    "typescript": "^5.0.4"
+  },
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/app.js"
+  },
+  "main": "app.js",
+  "dependencies": {
+    "@fastify/autoload": "^5.7.1",
+    "@fastify/multipart": "^7.6.0",
+    "@types/node": "^20.0.0",
+    "dotenv": "^16.0.3",
+    "fastify": "^4.17.0",
+    "fastify-plugin": "^4.5.0"
+  }
+}
