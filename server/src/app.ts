@@ -1,5 +1,6 @@
 import Fastify from 'fastify';
 import fastifyAutoload from '@fastify/autoload';
+import cors from '@fastify/cors'
 import path from 'path';
 import { config } from 'dotenv';
 
@@ -12,6 +13,7 @@ app.register(fastifyAutoload, {
     dir: path.join(__dirname, 'routes'),
     options: { prefix: 'api'}
 });
+app.register(cors)
 
 const start = async () => {
     try {
