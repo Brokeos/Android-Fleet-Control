@@ -7,7 +7,7 @@ import { config } from 'dotenv';
 config();
 
 const app = Fastify();
-const port = (process.env.PORT || 3000) as number;
+const port = (process.env.PORT || 4201) as number;
 
 app.register(fastifyAutoload, {
     dir: path.join(__dirname, 'routes'),
