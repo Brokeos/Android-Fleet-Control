@@ -14,7 +14,7 @@ import { environment } from 'src/environments/environment';
 })
 export class AppComponent {
   title = 'FleetControl';
-  url = environment.server_url;
+  url = environment.server_url + "/api";
 
   devicesListSelection: string[] = [];
 
