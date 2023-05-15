@@ -14,7 +14,7 @@ import { environment } from 'src/environments/environment';
 })
 export class AppComponent {
   title = 'FleetControl';
-  url = environment.server_url;
+  url = environment.server_url + "/api/devices";
 
   devicesListSelection: string[] = [];
 
@@ -63,13 +63,13 @@ export class AppComponent {
     Gets all connected devices, store them in this.devices
   */
   getDevices() {
-    this.http.get<any[]>(this.url + '/devices').subscribe(
+    this.http.get<any[]>(this.url + '/').subscribe(
       (response) => {
         this.devices = response;
         this.getDeviceNames(this.devices);
         this.getBatteryLevels(this.devices);
         this.getWifiConnection(this.devices);
-        
+
       },
       (error) => { this.displayError(error) });
   }
@@ -106,9 +106,9 @@ export class AppComponent {
     Get the name of each device
   */
   getDeviceNames(devices: string[]){
-    this.http.post<any[]>(this.url + '/devicenames', { deviceList: devices }).subscribe(
+    this.http.post<any[]>(this.url + '/devicesname', { deviceList: devices }).subscribe(
       (response) => {
-        console.log(response)
+        console.log(response);
         this.deviceNames = this.objectToArray(response)
       },
       (error) => { this.displayError(error) });
@@ -125,7 +125,7 @@ export class AppComponent {
 
 
   /*
-    
+
   */
   getdd(){
     console.log(this.devicesListSelection.length);
