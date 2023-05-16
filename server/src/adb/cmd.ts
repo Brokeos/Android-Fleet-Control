@@ -13,7 +13,7 @@ export function groupShellCmd(devices: any, cmd: any){
     }
 
     return output;
-};//OK
+};
 
 export function groupAdbCmd(devices: any, cmd: any){
 
@@ -28,7 +28,6 @@ export function groupAdbCmd(devices: any, cmd: any){
 
     return output;
 
-};//OK
-
+};
 
 

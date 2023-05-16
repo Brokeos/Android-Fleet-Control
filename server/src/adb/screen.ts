@@ -17,7 +17,7 @@ export function recordScreen(device: any, seconds: any){
     deleteFile([device], "/sdcard/" + filename); //delete video file on device
 
     return device + "_" + filename; //new filename
-};//OK mais à tester avec le front
+};
 
 export function screenCap(device: any){
 
@@ -31,6 +31,6 @@ export function screenCap(device: any){
 
 
     return device + "_" + filename;
-};//OK mais à tester avec le front
+};
 
 

@@ -11,7 +11,6 @@ module.exports = async function (app : FastifyInstance) {
 */
     app.post('/pushfile', async function (request : FastifyRequest, reply : FastifyReply) {
         const {file} = request.files as any;
-        console.log("Arrived");
         if(file == undefined || file == null){
             reply.status(415).send("Pas de fichier uploadé");
         }

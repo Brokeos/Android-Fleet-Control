@@ -18,14 +18,14 @@ module.exports = async function (app : FastifyInstance) {
         const res = toggleWifi(deviceList, false);
 
         reply.send(JSON.stringify(res));
-    });//OK
+    });
 
     app.post('/enablewifi', async function (request : FastifyRequest, reply : FastifyReply) {
         const {deviceList} = request.body as any;
         const res = toggleWifi(deviceList, true);
 
         reply.send(JSON.stringify(res));
-    });//OK
+    });
 
     app.post('/forgetallwifi', async function (request : FastifyRequest, reply : FastifyReply) {
         const {deviceList} = request.body as any;
@@ -39,6 +39,6 @@ module.exports = async function (app : FastifyInstance) {
         const res = checkWifiNetwork(deviceList);
 
         reply.send(JSON.stringify(res));
-    });//OK
+    });
     
 }

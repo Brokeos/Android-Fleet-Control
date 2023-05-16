@@ -25,7 +25,7 @@ export function installPackage(devices: any, packageName: any, timout: any){
 export function checkPackageInstalled(device: any, packageName: string){
     const packagesList = execSync(`adb -s ${device} shell pm list packages`).toString();
     return  packagesList.includes(`package:${packageName}`);
-};//OK
+};
 
 export function getPackages(devices: any){
 
@@ -39,7 +39,7 @@ export function getPackages(devices: any){
         packagesByDevice[device] = packages;
       }
       return packagesByDevice;
-};//OK
+};
 
 export function uninstallPackage(devices: any, packageName: any){
 
@@ -55,7 +55,7 @@ export function uninstallPackage(devices: any, packageName: any){
 
     return output;
 
-};//OK
+};
 
 export function uninstallMuliplePackages(devices: any, packageList: any){
 
@@ -64,4 +64,4 @@ export function uninstallMuliplePackages(devices: any, packageList: any){
         output[pack] = uninstallPackage(devices, pack);
     }
     return output;
-}//OK
+}

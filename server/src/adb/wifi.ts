@@ -74,7 +74,7 @@ export function checkWifiNetwork(devices: any){
     }
 
     return output;
-};//OK
+};
 
 export function toggleWifi(devices: any, bool: boolean){
 

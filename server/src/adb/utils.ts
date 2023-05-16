@@ -19,7 +19,7 @@ export function getDevices(){
     }
     return devices;
     
-}; //OK
+};
 
 export function getBatteryLevel(devices: any[]){
 
@@ -42,7 +42,7 @@ export function getBatteryLevel(devices: any[]){
     }
     return output;
 
-};//OK
+};
 
 export function getDevicesName(devices: any){
 
@@ -69,7 +69,7 @@ export function getDevicesName(devices: any){
 
     return output;
 
-};//OK
+};
 
 export function removeAll(source: any, searchval: any) {
     while (source.includes(searchval)) {
@@ -100,7 +100,7 @@ export function shellCmd(device: string, cmds: string[]) {
     var output = adbProccess.stdout.toString();
 
     return adbProccess.stdout.toString();
-}//OK
+}
 
 
 export function syncDelay(milliseconds: number) {
@@ -109,7 +109,7 @@ export function syncDelay(milliseconds: number) {
     while ((end - start) < milliseconds) {
         end = new Date().getTime();
     }
-} //OK
+}
 
 export function echapSpaces(source : any) {
 
@@ -143,5 +143,5 @@ export function adbCmd(device: any, cmd: any) {
     const adbProcess = child_process.spawnSync('adb', args);
 
     return adbProcess.stdout.toString();
-} //OK
+}
 
