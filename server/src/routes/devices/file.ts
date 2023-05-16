@@ -9,9 +9,8 @@ module.exports = async function (app : FastifyInstance) {
     Le pousse sur les machines,
     Puis supprime le fichier du serveur.
 */
-    app.get('/pushfile', async function (request : FastifyRequest, reply : FastifyReply) {
+    app.post('/pushfile', async function (request : FastifyRequest, reply : FastifyReply) {
         const {file} = request.files as any;
-
         if(file == undefined || file == null){
             reply.status(415).send("Pas de fichier uploadé");
         }
@@ -30,7 +29,7 @@ module.exports = async function (app : FastifyInstance) {
     });
 
 //Supprimer un fichier des machines.
-    app.get('/deletefile', async function (request : FastifyRequest, reply : FastifyReply) {
+    app.post('/deletefile', async function (request : FastifyRequest, reply : FastifyReply) {
         const{deviceList, filePath} = request.body as any;
         const res = deleteFile(deviceList, filePath);
 
@@ -38,7 +37,7 @@ module.exports = async function (app : FastifyInstance) {
     });
 
 //Récupérer les fichiers des machines.
-    app.get('/pullfile', async function (request : FastifyRequest, reply : FastifyReply) {
+    app.post('/pullfile', async function (request : FastifyRequest, reply : FastifyReply) {
         const{deviceList, filePath} = request.body as any;
         const splitFilePath = filePath.split("/");
         const filename = splitFilePath[splitFilePath.length - 1];

@@ -1,5 +1,5 @@
 import { Component, Input, OnInit, Output,EventEmitter } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { saveAs } from 'file-saver';
 import { Observable, of, Subject } from "rxjs";
 
@@ -12,7 +12,7 @@ export class FoctionnalitesComponent implements OnInit {
 
   
   title = 'FleetControl';
-  url = "http://localhost:4201";
+  url = "http://localhost:4201/api/devices";
 
   @Input() devices: string[] = [];
   @Input() batteryLevels: number[] = [];
@@ -285,7 +285,6 @@ export class FoctionnalitesComponent implements OnInit {
     Updates allPackages: a list of all the packages installed on at least one selected device
   */
   getAllPackages(devices: string[]){
-
     this.http.post<any[]>(this.url+'/installedpackages', {deviceList: devices}).subscribe(
       (response) => {
         console.log(response);
@@ -390,7 +389,11 @@ export class FoctionnalitesComponent implements OnInit {
     this.fileFormData.delete('deviceList');
     this.fileFormData.append('deviceList', JSON.stringify(devices)); //formData can't accept array, must be stringified and parsed at other end
 
-    return this.http.post<any>(this.url+'/pushfile', this.fileFormData).subscribe(
+    const headers = new HttpHeaders({
+        'Content-Type': 'multipart/form-data'
+    });
+
+    return this.http.post<any>(this.url+'/pushfile', this.fileFormData, {headers}).subscribe(
       (response) => {
         console.log(response);
         document.getElementById('alertSuccesspush').style.display="block";

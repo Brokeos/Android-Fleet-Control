@@ -1,14 +1,16 @@
 {
   "devDependencies": {
+    "fast-glob": "^3.2.12",
     "typescript": "^5.0.4"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "rm -rf dist/ && tsc",
     "start": "node dist/app.js"
   },
   "main": "app.js",
   "dependencies": {
     "@fastify/autoload": "^5.7.1",
+    "@fastify/cors": "^8.2.1",
     "@fastify/multipart": "^7.6.0",
     "@types/node": "^20.0.0",
     "dotenv": "^16.0.3",

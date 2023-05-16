@@ -10,7 +10,7 @@ module.exports = async function (app : FastifyInstance) {
     Installe le paquet sur les machines
     Supprime les fichier paquet sur le serveur
 */
-    app.get('/installpackage', async function (request : FastifyRequest, reply : FastifyReply) {
+    app.post('/installpackage', async function (request : FastifyRequest, reply : FastifyReply) {
         const packageapk = (request.files as any).package
         
         if(packageapk == undefined || packageapk == null){
@@ -37,7 +37,7 @@ module.exports = async function (app : FastifyInstance) {
     });
 
 //Recherche si le paquet est installé. 
-    app.get('/checkpackageinstalled', async function (request : FastifyRequest, reply : FastifyReply) {
+    app.post('/checkpackageinstalled', async function (request : FastifyRequest, reply : FastifyReply) {
         const {deviceList, packageName} = request.body as any;
         const res = {};
 
@@ -50,7 +50,7 @@ module.exports = async function (app : FastifyInstance) {
     });
 
 //Rercherche les paquets installé sur la machine
-    app.get('/installedpackages', async function (request : FastifyRequest, reply : FastifyReply) {
+    app.post('/installedpackages', async function (request : FastifyRequest, reply : FastifyReply) {
         const {deviceList} = request.body as any;
         const res = getPackages(deviceList);
 
@@ -58,7 +58,7 @@ module.exports = async function (app : FastifyInstance) {
     });
 
 //Désintaller un paquet
-    app.get('/uninstallpackage', async function (request : FastifyRequest, reply : FastifyReply) {
+    app.post('/uninstallpackage', async function (request : FastifyRequest, reply : FastifyReply) {
         const {deviceList, packageName} = request.body as any;
         const res = uninstallPackage(deviceList, packageName);
 
@@ -66,7 +66,7 @@ module.exports = async function (app : FastifyInstance) {
     });
 
 //Désinstaller plusieurs paquets.
-    app.get('/uninstallpackage', async function (request : FastifyRequest, reply : FastifyReply) {
+    app.post('/uninstallmuliplepackages', async function (request : FastifyRequest, reply : FastifyReply) {
         const {deviceList, packageList} = request.body as any;
         const res = uninstallMuliplePackages(deviceList, packageList);
 
@@ -74,18 +74,21 @@ module.exports = async function (app : FastifyInstance) {
     });
 
 //Nettoie les machines. 
-    app.get('/devicesname', async function (request : FastifyRequest, reply : FastifyReply) {
+    app.post('/clean', async function (request : FastifyRequest, reply : FastifyReply) {
         const {deviceList} = request.body as any;
-        let res = {}; 
-        const packages = getPackages(deviceList);
+        let status: { [key: string]: boolean } = {};
+        const packageForAllDevices = Array.from(new Set(Object.values(getPackages(deviceList)).flat()));
 
-        for(var i in deviceList){
+        uninstallMuliplePackages(deviceList, packageForAllDevices);
 
-            // @ts-ignore
-            res[deviceList[i]] = uninstallMuliplePackages(deviceList, packages);
+        //on vérifie que toutes les devices sont clean
+        const allDevicesCleanned = getPackages(deviceList);
+        for(const device of deviceList){
+          status[device] = (allDevicesCleanned[device].length == 0);
         }
 
-        reply.send(JSON.stringify(res));
+
+        reply.send(JSON.stringify(status));
     });
     
 }

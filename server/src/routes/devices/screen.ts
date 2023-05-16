@@ -4,13 +4,13 @@ import { screenCap, recordScreen} from '../../adb/screen';
 
 module.exports = async function (app : FastifyInstance) {
 
-    app.get('/recordscreen', async function (request : FastifyRequest, reply : FastifyReply) {
-        const {deviceList, secondes} = request.body as any;
+    app.post('/recordscreen', async function (request : FastifyRequest, reply : FastifyReply) {
+        const {deviceList, seconds} = request.body as any;
         let filesRes = {};
         let filenames = [];
         
         for (var i in deviceList) {
-            filenames.push(recordScreen(deviceList[i], secondes));
+            filenames.push(recordScreen(deviceList[i], seconds));
         }
 
         for(var i in filenames){
@@ -21,11 +21,10 @@ module.exports = async function (app : FastifyInstance) {
 
             fs.rm(filenames[i] as any, () => {});
         }
-
         reply.send(JSON.stringify(filesRes));
     });
 
-    app.get('/screencapture', async function (request : FastifyRequest, reply : FastifyReply) {
+    app.post('/screencapture', async function (request : FastifyRequest, reply : FastifyReply) {
         const {deviceList, secondes} = request.body as any;
         let filesRes = {};
         let filenames = [];
