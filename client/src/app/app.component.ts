@@ -25,7 +25,8 @@ export class AppComponent {
 
 
   constructor(private http: HttpClient) {
-    this.getDevices();//initialise devices list
+    //this.getDevices();//initialise devices list
+    setInterval(() => this.getDevices(), 5000)
   }
 
 
@@ -56,6 +57,24 @@ export class AppComponent {
   */
   refresh() {
     this.getDevices();
+  }
+
+  /*
+    toggle les logs
+  */
+  toggle_log(){
+    const toggleButton = document.querySelector('.toggle-sidebar') as HTMLButtonElement;
+    const sidebar = document.querySelector('.sidebar') as HTMLElement;
+    const mainContent = document.querySelector('.main-content') as HTMLElement;
+
+    sidebar.classList.toggle('hidden');
+    if (sidebar.classList.contains('hidden')) {
+      toggleButton.textContent = 'Afficher les logs';
+      mainContent.style.width = '100%';
+    } else {
+      toggleButton.textContent = 'Masquer les logs';
+      mainContent.style.width = '70%';
+    }
   }
 
 

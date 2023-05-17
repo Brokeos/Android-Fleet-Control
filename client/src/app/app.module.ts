@@ -11,6 +11,7 @@ import { FoctionnalitesComponent } from './fonctionnalites/foctionnalites.compon
 import { HeaderComponent } from './header/header.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { SidebarInfoComponent } from './sidebar-info/sidebar-info.component';
 
 
 @NgModule({
@@ -19,6 +20,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
     TabletteComponent,
     FoctionnalitesComponent,
     HeaderComponent,
+    SidebarInfoComponent,
   ],
   imports: [
     BrowserModule,

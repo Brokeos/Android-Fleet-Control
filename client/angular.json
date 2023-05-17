@@ -106,5 +106,8 @@
       }
     }
   },
-  "defaultProject": "FleetControl"
+  "defaultProject": "FleetControl",
+  "cli": {
+    "analytics": "1247067e-4f1f-4e3e-90a4-d415c6d966e6"
+  }
 }
