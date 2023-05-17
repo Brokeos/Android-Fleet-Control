@@ -1,5 +1,9 @@
 import { pullFiles, deleteFile } from './file';
 import { shellCmd, syncDelay } from './utils';
+import { getLogger } from './logger';
+
+var logger = getLogger();
+
 
 export function recordScreen(device: any, seconds: any){
     /* Important ! 
@@ -15,7 +19,7 @@ export function recordScreen(device: any, seconds: any){
     syncDelay((seconds + 1) * 1000); //wait for recording to be finished
     pullFiles([device], "/sdcard/" + filename); //pull video file
     deleteFile([device], "/sdcard/" + filename); //delete video file on device
-
+    logger.log("info", "Enregistrement de l'écran de "+device+": "+device + "_" + filename);
     return device + "_" + filename; //new filename
 };
 
@@ -29,7 +33,7 @@ export function screenCap(device: any){
     pullFiles([device], "/sdcard/" + filename) //pull image file
     deleteFile([device], "/sdcard/" + filename); //delete image file on device
 
-
+    logger.log("info", "capture d'écran de "+device+": "+device + "_" + filename);
     return device + "_" + filename;
 };
 

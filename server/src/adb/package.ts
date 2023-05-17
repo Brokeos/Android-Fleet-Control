@@ -1,11 +1,14 @@
 import child_process, {execSync} from 'child_process';
 import { echapSpaces, getDevices } from './utils';
+import { getLogger } from './logger';
+
+var logger = getLogger();
 
 export function installPackage(devices: any, packageName: any, timout: any){
 
     packageName = echapSpaces(packageName);
 
-    console.log("Installing " + packageName + " on the following devices: " + devices);
+    logger.log("info", "Installing " + packageName + " on the following devices: " + devices);
 
     var output: { [key: string]: any } = {};
 
@@ -24,6 +27,7 @@ export function installPackage(devices: any, packageName: any, timout: any){
 
 export function checkPackageInstalled(device: any, packageName: string){
     const packagesList = execSync(`adb -s ${device} shell pm list packages`).toString();
+    logger.log("info", "le package "+packageName+ (packagesList.includes(`package:${packageName}`)) ? "existe sur "+device : "n'existe pas sur "+device  );
     return  packagesList.includes(`package:${packageName}`);
 };
 
@@ -48,8 +52,10 @@ export function uninstallPackage(devices: any, packageName: any){
           try {
               execSync(`adb -s ${device} uninstall ${packageName}`);
               output[device] = "SUCCES";
+              logger.log("info", "le package "+packageName+" a été désinstaller de l'appareil "+device);
           } catch (error) {
             output[device] = "ERROR:"+` package inconnu sur ${device}`;
+            logger.log("info", "le package "+packageName+"est inconnu de l'appareil "+device);
           }
     }
 

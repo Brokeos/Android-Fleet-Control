@@ -1,4 +1,8 @@
 import child_process from 'child_process';
+import { getLogger } from './logger';
+
+var logger = getLogger();
+
 
 export function getDevices(){
 
@@ -14,7 +18,7 @@ export function getDevices(){
     //retreive just the device ids
     for (var i in output) {
         if (output[i] != "") {
-            devices.push(output[i].split("\t")[0])
+            devices.push(output[i].split("\t")[0]);
         }
     }
     return devices;
@@ -84,6 +88,7 @@ export function removeAll(source: any, searchval: any) {
 export function shellCmd(device: string, cmds: string[]) {
 
     if (!getDevices().includes(device)) {
+        logger.log("info", device + " is not connected");
         return (device + " is not connected")
     }
 
@@ -143,5 +148,14 @@ export function adbCmd(device: any, cmd: any) {
     const adbProcess = child_process.spawnSync('adb', args);
 
     return adbProcess.stdout.toString();
+}
+
+export function currentDateFormat(): string {
+  const date = new Date();
+  const annee = date.getFullYear().toString().padStart(4, '0');
+  const mois = (date.getMonth() + 1).toString().padStart(2, '0');
+  const jour = date.getDate().toString().padStart(2, '0');
+  const dateDuJour = `${annee}-${mois}-${jour}`;
+  return dateDuJour;
 }
 

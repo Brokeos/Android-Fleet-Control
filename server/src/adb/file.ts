@@ -1,5 +1,8 @@
 import { execSync } from 'child_process';
 import fs from 'fs';
+import { getLogger } from './logger';
+
+var logger = getLogger();
 
 export function pushFiles(devices: any, name: any, path: String){
 
@@ -9,6 +12,7 @@ export function pushFiles(devices: any, name: any, path: String){
             execSync(`adb -s ${device} push ${name} ${path}`);
           } catch (error) {
             status[device] = "KO: problème avec l'appareil ";
+            logger.log("error", device+": problème avec l'appareil "  );
           }
     }
 
@@ -28,9 +32,11 @@ export function deleteFile(devices: any, filePath:String){
             else {
                 console.log(`Le fichier ${filePath} n'existe pas sur l'appareil ${device}`);
                 status[device] = "KO: "+`Le fichier ${filePath} n'existe pas sur l'appareil ${device}`;
+                logger.log("info",device+`: Le fichier ${filePath} n'existe pas sur l'appareil `);
             }
           } catch (error) {
             status[device] = "KO: problème avec l'appareil ";
+            logger.log("error", device+": problème avec l'appareil "  );
           }
     }
 
@@ -46,8 +52,10 @@ export function pullFiles(device: any, filePath:String){
     try {
         execSync(`adb -s ${device} pull ${filePath} ${dstPath}`);
         fs.renameSync("./" + fileName, "./" + device + "_" + fileName);
+        logger.log("info", device+`:Le fichier ${filePath} a bien été uploadé` );
         return true;
     } catch (error) {
+        logger.log("error", device+`: Le fichier ${filePath} n'a pas été uploadé` );
         return false;
     }
 

@@ -1,9 +1,10 @@
 import child_process from 'child_process';
-import { shellCmd } from './utils';
+import { shellCmd,syncDelay } from './utils';
 import { checkPackageInstalled, installPackage } from './package';
-import { syncDelay } from './utils';
+import { getLogger } from './logger';
 
 const wifiManagerPackage = "com.steinwurf.adbjoinwifi"
+var logger = getLogger();
 
 export function addWifiNetwork(devices: any, ssid: any, passwordType: any, password: any, username: any){
     if (passwordType == "") {
@@ -24,9 +25,8 @@ export function addWifiNetwork(devices: any, ssid: any, passwordType: any, passw
             }
         } catch (e) {
             output[device] = e;
+            logger.log("error", device+": "+e);
         }
-
-
     }
     syncDelay(3 * 1000);
     return output;
@@ -71,6 +71,8 @@ export function checkWifiNetwork(devices: any){
                 break;
             }
         }
+        logger.log("info", device+": nom du réseau wifi: "+output[device]);
+
     }
 
     return output;
@@ -80,13 +82,14 @@ export function toggleWifi(devices: any, bool: boolean){
 
     let output: { [key: string]: string } = {};
 
-
     for (const device of devices) {
         if (bool) {
             output[device] = shellCmd(device, ["svc", "wifi", "enable"]);
         } else {
             output[device] = shellCmd(device, ["svc", "wifi", "disable"]);
         }
+        syncDelay(3 * 1000);
+        logger.log("info", device+": résultat de "+(bool ? "l'activation ":"la désactivation ")+" du wifi: "+checkWifiEnabled(devices)[device]);
     }
 
     syncDelay(3 * 1000);
@@ -102,8 +105,8 @@ function checkWifiEnabled(devices: any) {
         let temp: string[] = res.split("\n");
 
         output[device] = (temp[0] == "Wi-Fi is enabled");
+        logger.log("info", device+": Wifi activé ? "+(temp[0] == "Wi-Fi is enabled"));
     }
-
     return output;
 }
 
