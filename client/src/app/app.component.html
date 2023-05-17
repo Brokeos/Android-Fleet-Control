@@ -1,12 +1,19 @@
 <app-header></app-header>
 
-<app-foctionnalites [devices]='devices' (refresh)='refresh()' [devicesListSelection]='devicesListSelection' [batteryLevels]='batteryLevels' [deviceNames]='deviceNames'></app-foctionnalites>
-<div class="d-flex justify-content-center" style="margin-top: 2%;">
-    <div class="container">
-        <button class="btn btn-outline-primary" (click)="refresh()">
-      <!--<mat-icon>rotate_left</mat-icon>--> Refresh
-    </button>
-    </div>
-</div>
+<div class="wrapper">
 
-<app-tablette [devices]='devices' (eventChild)='getDevicesSelection($event)' [wifiConnections]='wifiConnections' [batteryLevels]='batteryLevels' [deviceNames]='deviceNames'></app-tablette>
+  <app-sidebar-info class="sidebar"></app-sidebar-info>
+  <button class="toggle-sidebar btn btn-outline-primary" (click)="toggle_log()">Afficher les logs</button>
+  
+  <div class="main-content">
+    <app-foctionnalites [devices]='devices' (refresh)='refresh()' [devicesListSelection]='devicesListSelection' [batteryLevels]='batteryLevels' [deviceNames]='deviceNames'></app-foctionnalites>
+    <div class="d-flex justify-content-center" style="margin-top: 2%;">
+        <div class="container">
+            <button class="btn btn-outline-primary" (click)="refresh()"><!--<mat-icon>rotate_left</mat-icon>--> Rafraîchir </button>
+        </div>
+    </div>
+  
+    <app-tablette [devices]='devices' (eventChild)='getDevicesSelection($event)' [wifiConnections]='wifiConnections' [batteryLevels]='batteryLevels' [deviceNames]='deviceNames'></app-tablette>  
+  
+  </div>
+</div>
