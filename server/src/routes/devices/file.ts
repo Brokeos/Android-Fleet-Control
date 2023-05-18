@@ -12,14 +12,14 @@ module.exports = async function (app : FastifyInstance) {
     app.post('/pushfile', async function (request : FastifyRequest, reply : FastifyReply) {
         const {file} = request.files as any;
         if(file == undefined || file == null){
-            reply.status(415).send("Pas de fichier uploadé");
+            reply.status(500).send({response : "Pas de fichier uploadé"});
         }
 
         const {deviceList} = JSON.parse(request.body as any);
 
         file.mv(file.name, function(error : any, message : any){
             if(error){
-                reply.status(415).send("Erreur : Sauvegarde échouée.");
+                reply.status(500).send({response : "Erreur : Sauvegarde échouée."});
             } else {
                 const res = pushFiles(deviceList, file.name, "/sdcard/");
                 reply.send(JSON.stringify(res));

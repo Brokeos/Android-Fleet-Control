@@ -1,4 +1,7 @@
-<h2>LOGS : </h2>
 <div class="sidebar-textbox">
-  <div class="sidebar-textbox-content"> </div>
+  <div class="sidebar-textbox-content sidebar-scrollable"> 
+    <p class="logs" *ngFor="let log of logs">
+      {{log}}
+    </p>
+  </div>
 </div>

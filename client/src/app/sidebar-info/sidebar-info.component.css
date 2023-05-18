@@ -6,3 +6,18 @@
   border: 1px solid #ccc;
   padding: 10px;
 }
+
+.logs{
+  font-size: 11px;
+}
+
+.sidebar-scrollable {
+  max-height: 800px;
+  overflow-y: auto;
+}
+
+p {
+  margin-bottom: -4px; 
+  padding-bottom: -4px;
+}
+

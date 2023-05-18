@@ -1,7 +1,7 @@
-import { Component, Input, OnInit, Output,EventEmitter } from '@angular/core';
+import { Component, Input, OnInit, Output,EventEmitter, ViewChild } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { saveAs } from 'file-saver';
-import { Observable, of, Subject } from "rxjs";
+import { TopbarInfoComponent } from './../topbar-info/topbar-info.component';
 
 @Component({
   selector: 'app-foctionnalites',
@@ -14,6 +14,14 @@ export class FoctionnalitesComponent implements OnInit {
   title = 'FleetControl';
   url = "http://localhost:4201/api/devices";
 
+  successMSG:string = ""
+  errorMSG:string = ""
+  isOk:boolean = false
+  @ViewChild(TopbarInfoComponent, {static : true})topbar_info: TopbarInfoComponent;
+  httpOptions = {
+    headers: new HttpHeaders({"Content-Type": "text/plain"})
+  }
+
   @Input() devices: string[] = [];
   @Input() batteryLevels: number[] = [];
   @Input() devicesListSelection: string[] = [];
@@ -25,6 +33,7 @@ export class FoctionnalitesComponent implements OnInit {
   output: string[]=[];
   shellcmd : string = "";
   adbcmd: string = "";
+
 
   packageFormData = new FormData(); //used to transfer an apk to be installed
   timeoutSeconds: number = 10;
@@ -198,14 +207,27 @@ export class FoctionnalitesComponent implements OnInit {
     Send an adb shell command to selected devices
   */
   shellCommand(devices: string[], cmd: string){
-    this.http.post<any>(this.url+'/shellcmd', {deviceList: devices, cmd: cmd}).subscribe(
-      (response) => {
-        console.log(response);
-        this.output=JSON.stringify(response).split(',');
-        this.downloadCommandOutput("sortie_commande.txt", this.output);
-
-      },
-      (error) => { this.displayError(error)});
+    if(cmd != "") {
+      this.http.post<any>(this.url+'/shellcmd', {deviceList: devices, cmd: cmd}).subscribe(
+        (response) => {
+          console.log(response);
+          this.output=JSON.stringify(response).split(',');
+          this.downloadCommandOutput("sortie_Shell_commande.txt", this.output);
+          this.successMSG = "La commande a été exécutée !"
+          this.isOk = true;
+          this.topbar_info.printInfo(this.successMSG, this.isOk);
+  
+        },
+        (error) => { this.displayError(error)
+          this.errorMSG = "La commande n'a pas été exécutée ! Erreur : " + error.message + ".";
+          this.isOk = false;
+          this.topbar_info.printInfo(this.errorMSG, this.isOk);
+        });
+    } else {
+        this.errorMSG = "La commande ne doit pas être vide !";
+        this.isOk = false;
+        this.topbar_info.printInfo(this.errorMSG, this.isOk);
+    }
   }
 
 
@@ -213,14 +235,29 @@ export class FoctionnalitesComponent implements OnInit {
     Send an adb command to selected devices
   */
   adbCommand(devices: string[], cmd: string){
-    this.http.post<any>(this.url+'/adbcmd', {deviceList: devices, cmd: cmd}).subscribe(
-      (response) => {
-        console.log(response);
-        this.output=JSON.stringify(response).split(',');
-        this.downloadCommandOutput("sortie_commande.txt", this.output);
 
-      },
-      (error) => { this.displayError(error)});
+    if(cmd != ""){
+      this.http.post<any>(this.url+'/adbcmd', {deviceList: devices, cmd: cmd}).subscribe(
+        (response) => {
+          console.log(response);
+          this.output=JSON.stringify(response).split(',');
+          this.downloadCommandOutput("sortie_ADB_commande.txt", this.output);
+          this.successMSG = "La commande a été exécutée !"
+          this.isOk = true;
+          this.topbar_info.printInfo(this.successMSG, this.isOk);
+  
+        },
+        (error) => { this.displayError(error)
+          this.errorMSG = "La commande n'a pas été exécutée ! Erreur : " + error.message + ".";
+          this.isOk = false;
+          this.topbar_info.printInfo(this.errorMSG, this.isOk);
+        });
+    } else {
+      this.errorMSG = "La commande ne doit pas être vide !";
+      this.isOk = false;
+      this.topbar_info.printInfo(this.errorMSG, this.isOk);
+    }
+    
   }
   
   
@@ -244,15 +281,17 @@ export class FoctionnalitesComponent implements OnInit {
     return this.http.post<any>(this.url+'/installpackage', this.packageFormData).subscribe(
       (response) => {
         console.log(response);
-        document.getElementById('alertSuccessinstall').style.display="block";
-        document.getElementById('alertFailedinstall').style.display="none";
+        this.successMSG = "Package installé avec succès !";
+        this.isOk = true;
+        this.topbar_info.printInfo(this.successMSG, this.isOk);
         var inputfile = document.getElementById("install") as HTMLInputElement; 
         inputfile.value="";
       },
       (error) => { 
         this.displayError(error);
-        document.getElementById('alertSuccessinstall').style.display="none";
-        document.getElementById('alertFailedinstall').style.display="block";
+        this.errorMSG = "Attention votre package n'a pas été installé ! Erreur : " + error.message + ".";
+        this.isOk = false;
+        this.topbar_info.printInfo(this.errorMSG, this.isOk);
       });
   }
 
@@ -264,8 +303,15 @@ export class FoctionnalitesComponent implements OnInit {
     this.http.post<any>(this.url+'/checkpackageinstalled', {deviceList: devices, packageName: packageName}).subscribe(
       (response) => {
         console.log(response);
+        this.successMSG = "Recherche de paquet exécuté avec succés !";
+        this.isOk = true;
+        this.topbar_info.printInfo(this.successMSG, this.isOk);
       },
-      (error) => { this.displayError(error)});
+      (error) => { this.displayError(error)
+        this.errorMSG = "Recherche de paquet non exécuté ! Erreur : " + error.message + "." ;
+        this.isOk = true;
+        this.topbar_info.printInfo(this.errorMSG, this.isOk);
+      });
   }
   
 
@@ -276,8 +322,15 @@ export class FoctionnalitesComponent implements OnInit {
     this.http.post<any[]>(this.url+'/installedpackages', {deviceList: devices}).subscribe(
       (response) => {
         console.log(response);
+        this.successMSG = "Recherche de tous les paquets exécuté avec succés !";
+        this.isOk = true;
+        this.topbar_info.printInfo(this.successMSG, this.isOk);
       },
-      (error) => { this.displayError(error)});
+      (error) => { this.displayError(error)
+        this.errorMSG = "Recherche de tous les paquets non exécuté ! Erreur : " + error.message + "." ;
+        this.isOk = true;
+        this.topbar_info.printInfo(this.errorMSG, this.isOk);
+      });
   }
 
   
@@ -346,8 +399,15 @@ export class FoctionnalitesComponent implements OnInit {
     this.http.post<any>(this.url+'/uninstallpackage', {deviceList: devices, packageName: packageName}).subscribe(
       (response) => {
         console.log(response);
+        this.successMSG = "Désinstallation du package exécuté avec succés !";
+        this.isOk = true;
+        this.topbar_info.printInfo(this.successMSG, this.isOk);
       },
-      (error) => { this.displayError(error)});
+      (error) => { this.displayError(error)
+        this.errorMSG = "Désinstallation du package exécuté avec ERREUR ! Erreur : " + error.message;
+        this.isOk = false;
+        this.topbar_info.printInfo(this.errorMSG, this.isOk);
+      });
   }
 
 
@@ -358,16 +418,18 @@ export class FoctionnalitesComponent implements OnInit {
     this.http.post<any>(this.url+'/uninstallmuliplepackages', {deviceList: devices, packageList: packageList}).subscribe(
       (response) => {
         console.log(response);
-        document.getElementById('alertSuccessuninstall').style.display="block";
-        document.getElementById('alertFaileduninstall').style.display="none";
+        this.successMSG = "Désinstallation des packages exécuté avec succés !";
+        this.isOk = true;
+        this.topbar_info.printInfo(this.successMSG, this.isOk);
         var inputfile = document.getElementById("uninstall") as HTMLInputElement; 
         inputfile.value="";
 
       },
       (error) => { 
         this.displayError(error);
-        document.getElementById('alertSuccessuninstall').style.display="none";
-        document.getElementById('alertFaileduninstall').style.display="block";
+        this.errorMSG = "Désinstallation des packages exécuté avec ERREUR ! Erreur : " + error.message;
+        this.isOk = false;
+        this.topbar_info.printInfo(this.errorMSG, this.isOk);
       });
 
     this.packagesToUninstall = [];
@@ -381,6 +443,8 @@ export class FoctionnalitesComponent implements OnInit {
     var files = target.files;
     this.fileFormData.delete('file');
     this.fileFormData.append('file', files[0]);
+
+    console.log(this.fileFormData.get("file"))
   }
   /*
     Sends the file to the server
@@ -389,21 +453,17 @@ export class FoctionnalitesComponent implements OnInit {
     this.fileFormData.delete('deviceList');
     this.fileFormData.append('deviceList', JSON.stringify(devices)); //formData can't accept array, must be stringified and parsed at other end
 
-    const headers = new HttpHeaders({
-        'Content-Type': 'multipart/form-data'
-    });
-
-    return this.http.post<any>(this.url+'/pushfile', this.fileFormData, {headers}).subscribe(
+    return this.http.post<any>(this.url+'/pushfile', this.fileFormData, this.httpOptions).subscribe(
       (response) => {
-        console.log(response);
-        document.getElementById('alertSuccesspush').style.display="block";
-        document.getElementById('alertFailedpush').style.display="none";
-        var inputfile = document.getElementById("filePush") as HTMLInputElement; 
-        inputfile.value="";
+        console.log(response)
+        this.successMSG = "Fichier envoyé avec succès !"
+        this.isOk = true;
+        this.topbar_info.printInfo(this.successMSG, this.isOk);
       },
-      (error) => { this.displayError(error)
-        document.getElementById('alertSuccesspush').style.display="none";
-        document.getElementById('alertFailedpush').style.display="block";      
+      (error) => { this.displayError(error)  
+        this.errorMSG = "Attention votre fichier n'a pas été envoyé ! Erreur : " + error.message + ".";
+        this.isOk = false;
+        this.topbar_info.printInfo(this.errorMSG, this.isOk);   
       });
   }
   
@@ -412,18 +472,26 @@ export class FoctionnalitesComponent implements OnInit {
 
   */
   deleteFile(devices: string[], filePath: string){
-    this.http.post<any>(this.url+'/deletefile', {deviceList: devices, filePath: filePath}).subscribe(
-      (response) => {
-        console.log(response);
-        document.getElementById('alertSuccessdelete').style.display="block";
-        document.getElementById('alertFaileddelete').style.display="none";
-        var inputfile = document.getElementById("fileDelete") as HTMLInputElement; 
-      },
-      (error) => { 
-        this.displayError(error);
-        document.getElementById('alertSuccessdelete').style.display="none";
-        document.getElementById('alertFaileddelete').style.display="block";
-      });
+
+    if(filePath != ""){
+      this.http.post<any>(this.url+'/deletefile', {deviceList: devices, filePath: filePath}).subscribe(
+        (response) => {
+          console.log(response);
+          this.successMSG = "Fichier supprimé avec succès !"
+          this.isOk = true;
+          this.topbar_info.printInfo(this.successMSG, this.isOk);
+        },
+        (error) => { 
+          this.displayError(error);
+          this.errorMSG = "Attention votre fichier n'a pas été supprimé ! Erreur : " + error.message + ".";
+          this.isOk = false;
+          this.topbar_info.printInfo(this.errorMSG, this.isOk);   
+        });
+    } else {
+        this.errorMSG = "Attention votre fichier n'a pas été téléchargé ! Erreur : Chemin du fichier vide.";
+        this.isOk = false;
+        this.topbar_info.printInfo(this.errorMSG, this.isOk);
+    }
   }
   
   
@@ -433,27 +501,34 @@ export class FoctionnalitesComponent implements OnInit {
     Tested for upto 15Mo so far...
   */
   pullFile(devices: string[], filePath: string){
-    this.http.post<any>(this.url+'/pullfile', {deviceList: devices, filePath: filePath}).subscribe(
-      (response) => {
-        console.log(response);
-        document.getElementById('alertSuccesspull').style.display="block";
-        document.getElementById('alertFailedpull').style.display="none";
-        var inputfile = document.getElementById("filePull") as HTMLInputElement; 
-        inputfile.value="";
-        for(var i in response){
-          if(response[i].success == true){
-            this.downloadFile(response[i].filename, response[i].data);
+
+    if(filePath != ""){
+      this.http.post<any>(this.url+'/pullfile', {deviceList: devices, filePath: filePath}).subscribe(
+        (response) => {
+          console.log(response);
+          this.successMSG = "Fichier téléchargé avec succès !"
+          this.isOk = true;
+          this.topbar_info.printInfo(this.successMSG, this.isOk);
+          for(var i in response){
+            if(response[i].success == true){
+              this.downloadFile(response[i].filename, response[i].data);
+            }
+            else{
+              console.log(response[i].error);
+            }
           }
-          else{
-            console.log(response[i].error);
-          }
-        }
-      },
-      (error) => { 
-        this.displayError(error);
-        document.getElementById('alertSuccesspull').style.display="none";
-        document.getElementById('alertFailedpull').style.display="block";
-      });
+        },
+        (error) => { 
+          this.displayError(error);
+          this.errorMSG = "Attention votre fichier n'a pas été téléchargé ! Erreur : " + error.message + ".";
+          this.isOk = false;
+          this.topbar_info.printInfo(this.errorMSG, this.isOk);
+        });
+    } else {
+        this.errorMSG = "Attention votre fichier n'a pas été téléchargé ! Erreur : Chemin du fichier vide.";
+        this.isOk = false;
+        this.topbar_info.printInfo(this.errorMSG, this.isOk);
+    }
   }
   
   
@@ -467,19 +542,17 @@ export class FoctionnalitesComponent implements OnInit {
     this.http.post<any>(this.url+'/addwifi', {deviceList: devices, ssid: ssid, passwordType: passwordType, password: password, username: username}).subscribe(
       (response) => {
         console.log(response);
-        document.getElementById('alertSuccessajoutwifi').style.display="block";
-        document.getElementById('alertFailedajoutwifi').style.display="none";
-        var ssid = document.getElementById("ssid") as HTMLInputElement; 
-        var mdp = document.getElementById("mdp") as HTMLInputElement; 
-        ssid.value="";
-        mdp.value="";
+        this.successMSG = "Le Wi-Fi a été ajouté avec succès !"
+        this.isOk = true;
+        this.topbar_info.printInfo(this.successMSG, this.isOk);
 
         this.refresh.emit("");
       },
       (error) => { 
         this.displayError(error);
-        document.getElementById('alertSuccessajoutwifi').style.display="none";
-        document.getElementById('alertFailedajoutwifi').style.display="block";
+        this.errorMSG = "Attention le Wi-Fi n'a pas été ajouté ! Erreur : " + error.message + ".";
+        this.isOk = false;
+        this.topbar_info.printInfo(this.errorMSG, this.isOk);
       });
   }
 
@@ -491,8 +564,16 @@ export class FoctionnalitesComponent implements OnInit {
     this.http.post<any>(this.url+'/disablewifi', {deviceList: devices, toggle: false}).subscribe(
       (response) => {
         console.log(response);
+        this.successMSG = "Le Wi-Fi a bien été désactivé avec succès !"
+        this.isOk = true;
+        this.topbar_info.printInfo(this.successMSG, this.isOk);
       },
-      (error) => { this.displayError(error)});
+      (error) => { this.displayError(error)
+        this.errorMSG = "Attention le Wi-Fi n'a pas été désactivé ! Erreur : " + error.message + ".";
+        this.isOk = false;
+        this.topbar_info.printInfo(this.errorMSG, this.isOk);
+      });
+      
   }
   
   
@@ -503,8 +584,15 @@ export class FoctionnalitesComponent implements OnInit {
     this.http.post<any>(this.url+'/enablewifi', {deviceList: devices, toggle: true}).subscribe(
       (response) => {
         console.log(response);
+        this.successMSG = "Le Wi-Fi a bien été activé avec succès !"
+        this.isOk = true;
+        this.topbar_info.printInfo(this.successMSG, this.isOk);
       },
-      (error) => { this.displayError(error)});
+      (error) => { this.displayError(error)
+        this.errorMSG = "Attention le Wi-Fi n'a pas été activé ! Erreur : " + error.message + ".";
+        this.isOk = false;
+        this.topbar_info.printInfo(this.errorMSG, this.isOk);
+      });
   }
 
 
@@ -515,8 +603,15 @@ export class FoctionnalitesComponent implements OnInit {
     this.http.post<any>(this.url+'/forgetallwifi', {deviceList: devices}).subscribe(
       (response) => {
         console.log(response);
+        this.successMSG = "Les connexion Wi-Fi ont bien été oubliés !"
+        this.isOk = true;
+        this.topbar_info.printInfo(this.successMSG, this.isOk);
       },
-      (error) => { this.displayError(error)});
+      (error) => { this.displayError(error)
+        this.errorMSG = "Attention les connexion Wi-Fi n'ont pas été oubliés ! Erreur : " + error.message + ".";
+        this.isOk = false;
+        this.topbar_info.printInfo(this.errorMSG, this.isOk);
+      });
   }
 
   /*
@@ -532,8 +627,15 @@ recordScreen(devices: string[], seconds: number){
       for(var i in files){
         this.downloadFile(i, files[i]);
       }
+      this.successMSG = "La capture c'est bien passé !"
+      this.isOk = true;
+      this.topbar_info.printInfo(this.successMSG, this.isOk);
     },
-    (error) => { this.displayError(error)});
+    (error) => { this.displayError(error)
+      this.errorMSG = "Attention la capture ne c'est pas bien passé ! Erreur : " + error.message + ".";
+      this.isOk = false;
+      this.topbar_info.printInfo(this.errorMSG, this.isOk);
+    });
   }
 
 
@@ -551,8 +653,15 @@ recordScreen(devices: string[], seconds: number){
         for(var i in files){
           this.downloadFile(i, files[i]);
         }
+        this.successMSG = "La capture d'écran c'est bien passé !"
+        this.isOk = true;
+        this.topbar_info.printInfo(this.successMSG, this.isOk);
       },
-      (error) => { this.displayError(error)});
+      (error) => { this.displayError(error)
+        this.errorMSG = "Attention la capture d'écran ne c'est pas bien passé ! Erreur : " + error.message + ".";
+        this.isOk = false;
+        this.topbar_info.printInfo(this.errorMSG, this.isOk);
+      });
   }
 
 
@@ -563,13 +672,15 @@ recordScreen(devices: string[], seconds: number){
     this.http.post<any>(this.url+'/clean', {deviceList: devices}).subscribe(
       (response) => {
         console.log(response);
-        document.getElementById('alertSuccessclean').style.display="block";
-        document.getElementById('alertFailedclean').style.display="none";
+        this.successMSG = "Les applications non système des appareils sont supprimées avec succès!"
+        this.isOk = true;
+        this.topbar_info.printInfo(this.successMSG, this.isOk);
       },
       (error) => { 
         this.displayError(error);
-        document.getElementById('alertSuccessclean').style.display="none";
-        document.getElementById('alertFailedclean').style.display="block";
+        this.errorMSG = "Attention une erreur est survenue lors de la suppression ! Erreur : " + error.message + ".";
+        this.isOk = false;
+        this.topbar_info.printInfo(this.errorMSG, this.isOk);
       });
   }
 

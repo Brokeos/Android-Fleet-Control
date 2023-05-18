@@ -12,6 +12,7 @@ import { HeaderComponent } from './header/header.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { SidebarInfoComponent } from './sidebar-info/sidebar-info.component';
+import { TopbarInfoComponent } from './topbar-info/topbar-info.component';
 
 
 @NgModule({
@@ -21,6 +22,7 @@ import { SidebarInfoComponent } from './sidebar-info/sidebar-info.component';
     FoctionnalitesComponent,
     HeaderComponent,
     SidebarInfoComponent,
+    TopbarInfoComponent,
   ],
   imports: [
     BrowserModule,

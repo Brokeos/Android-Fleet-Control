@@ -1,0 +1,20 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 7
+    },
+    "auditLog": "/home/etud/Documents/M2/Projet/Android-Fleet-Control/server/log/.1dcbd33ed608ff46bbde6ccd5ec1a6c5a15eafbf-audit.json",
+    "files": [
+        {
+            "date": 1684333315108,
+            "name": "/home/etud/Documents/M2/Projet/Android-Fleet-Control/server/log/2023-05-17-logs.log",
+            "hash": "a62472c76c7464191a2bf68b06dbc5db57e1fe0338118ed16e2a8c1e9c21a1ad"
+        },
+        {
+            "date": 1684408080448,
+            "name": "/home/etud/Documents/M2/Projet/Android-Fleet-Control/server/log/2023-05-18-logs.log",
+            "hash": "20a69fc63f1b3bdca47ecdc37279a9a5fd63b22b8f8a69131f23cebb45561135"
+        }
+    ],
+    "hashType": "sha256"
+}

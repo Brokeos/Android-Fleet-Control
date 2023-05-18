@@ -22,11 +22,13 @@ export class AppComponent {
   batteryLevels: number[] = [];
   wifiConnections: string[] = [];
   deviceNames: string[] = [];
+  wifi_timer: number = 0;
+  refresh: boolean = true;
 
 
   constructor(private http: HttpClient) {
-    //this.getDevices();//initialise devices list
-    setInterval(() => this.getDevices(), 5000)
+    this.getDevices();//initialise devices list
+    setInterval(() => this.getDevices(), 15000)
   }
 
 
@@ -55,8 +57,9 @@ export class AppComponent {
   /*
     Refreshes the device list and gets their battery level
   */
-  refresh() {
+  Refresh() {
     this.getDevices();
+    this.refresh = true;
   }
 
   /*
@@ -87,8 +90,11 @@ export class AppComponent {
         this.devices = response;
         this.getDeviceNames(this.devices);
         this.getBatteryLevels(this.devices);
-        this.getWifiConnection(this.devices);
-
+        if(this.wifi_timer > 60 || this.refresh){
+          this.getWifiConnection(this.devices);
+          this.refresh = false;
+          this.wifi_timer = 0;
+        }
       },
       (error) => { this.displayError(error) });
   }
@@ -101,7 +107,7 @@ export class AppComponent {
     this.http.post<any[]>(this.url + '/batterylevels', { deviceList: devices }).subscribe(
       (response) => {
 
-        console.log(response)
+        //console.log(response)
         this.batteryLevels = this.objectToArray(response)
       },
       (error) => { this.displayError(error) });
@@ -114,7 +120,7 @@ export class AppComponent {
   getWifiConnection(devices: string[]) {
     this.http.post<any>(this.url + '/getwificonnection', { deviceList: devices }).subscribe(
       (response) => {
-        console.log(response);
+        //console.log(response);
         this.wifiConnections = this.objectToArray(response);
       },
       (error) => { this.displayError(error) });
@@ -127,7 +133,7 @@ export class AppComponent {
   getDeviceNames(devices: string[]){
     this.http.post<any[]>(this.url + '/devicesname', { deviceList: devices }).subscribe(
       (response) => {
-        console.log(response);
+        //console.log(response);
         this.deviceNames = this.objectToArray(response)
       },
       (error) => { this.displayError(error) });

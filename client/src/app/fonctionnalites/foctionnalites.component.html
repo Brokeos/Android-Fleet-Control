@@ -3,7 +3,7 @@
     <div class="container">
 
         <h3 class="text-center">Gestion des tablettes</h3>
-
+        <app-topbar-info class="topbar"> </app-topbar-info>
         <br>
         <br>
         <div class="d-grid gap-2 d-md-flex justify-content-center">
@@ -48,18 +48,12 @@
                         <button type="button" class="btn-close" (click)="nonDisplayAlertClean()" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body col text-center">
-                        <div class="alert alert-success" role="alert" style="display: none;" id="alertSuccessclean">
-                            les applications non système des appareils sont supprimées avec succès!
-                        </div>
-                        <div class="alert alert-danger" role="alert" style="display: none;" id="alertFailedclean">
-                            Attention une erreur est survenue lors de la suppression !
-                        </div>
                         Cliquer sur OK si vous voulez supprimer toutes les applications non système des appareils.
                         <br>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" (click)="cleanDevices(this.devicesListSelection)">OK</button>
-                        <button type="button" class="btn btn-secondary" (click)="nonDisplayAlertClean()" data-bs-dismiss="modal">Annuler</button>
+                        <button type="button" class="btn btn-primary" (click)="cleanDevices(this.devicesListSelection)" data-bs-dismiss="modal">OK</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
                     </div>
                 </div>
             </div>
@@ -97,15 +91,9 @@
                     <div class="modal-header">
                         <h5 style="color:black" class="modal-title" id="uninstallLabel">Selectionnez les packages à désinstaller
                         </h5>
-                        <button type="button" class="btn-close" (click)="nonDisplayAlertUnInstall()" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <div class="alert alert-success" role="alert" style="display: none;" id="alertSuccessuninstall">
-                            Package désinstallé avec succès !
-                        </div>
-                        <div class="alert alert-danger" role="alert" style="display: none;" id="alertFaileduninstall">
-                            Attention une erreur est survenue lors de la désinstallation !
-                        </div>
                         <table class="table table-striped">
                             <thead style="text-align: center;">
                                 <input type="text" id="uninstall" [(ngModel)]="packageSearch" placeholder="com.example.appname" (keyup)="updatePackagesToDisplay(this.allPackages, this.packageSearch)" style="margin: 3%;" />
@@ -127,8 +115,8 @@
                         </table>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" (click)="uninstallMultiplePackages(this.devicesListSelection, this.packagesToUninstall)">Désinstaller</button>
-                        <button type="button" class="btn btn-secondary" (click)="nonDisplayAlertUnInstall()" data-bs-dismiss="modal">Annuler</button>
+                        <button type="button" class="btn btn-primary" (click)="uninstallMultiplePackages(this.devicesListSelection, this.packagesToUninstall)" data-bs-dismiss="modal">Désinstaller</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
                     </div>
                 </div>
             </div>
@@ -143,12 +131,6 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" (click)="nonDisplayAlertInstall()" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <div class="alert alert-success" role="alert" style="display: none;" id="alertSuccessinstall">
-                            Package installé avec succès !
-                        </div>
-                        <div class="alert alert-danger" role="alert" style="display: none;" id="alertFailedinstall">
-                            Attention votre package n'a pas été installé !
-                        </div>
                         <p style="color:black">Choisissez un package </p>
                         <input type="file" id="install" (change)="handlePackage($event.target)" accept=".apk">
                         <div style="margin-top: 20px;">
@@ -161,8 +143,8 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" (click)="installPackage(this.devicesListSelection, this.timeoutSeconds * 1000)">Installer</button>
-                        <button type="button" class="btn btn-secondary" (click)="nonDisplayAlertInstall()" data-bs-dismiss="modal">Annuler</button>
+                        <button type="button" class="btn btn-primary" (click)="installPackage(this.devicesListSelection, this.timeoutSeconds * 1000)" data-bs-dismiss="modal">Installer</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
                     </div>
                 </div>
             </div>
@@ -179,18 +161,12 @@
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="nonDisplayAlertPushFile()"></button>
                         </div>
                         <div class="modal-body">
-                            <div class="alert alert-success" role="alert" style="display: none;" id="alertSuccesspush">
-                                Fichier envoyé avec succès !
-                            </div>
-                            <div class="alert alert-danger" role="alert" style="display: none;" id="alertFailedpush">
-                                Attention votre fichier n'a pas été envoyé !
-                            </div>
                             <p style="color:black">Choisissez un fichier</p>
                             <input type="file" id="filePush" (change)="handleFile($event.target)">
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-primary" (click)="pushFile(this.devicesListSelection)">Envoyer</button>
-                            <button type="button" class="btn btn-secondary" (click)="nonDisplayAlertPushFile()" data-bs-dismiss="modal">Annuler</button>
+                            <button type="button" class="btn btn-primary" (click)="pushFile(this.devicesListSelection)" data-bs-dismiss="modal">Envoyer</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
                         </div>
                     </div>
                 </form>
@@ -207,18 +183,12 @@
                         <button type="button" class="btn-close" (click)="nonDisplayAlertDeleteFile()" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <div class="alert alert-success" role="alert" style="display: none;" id="alertSuccessdelete">
-                            Fichier supprimé avec succès !
-                        </div>
-                        <div class="alert alert-danger" role="alert" style="display: none;" id="alertFaileddelete">
-                            Attention votre fichier n'a pas été supprimé !
-                        </div>
                         <p style="color:black">Entrez le nom de fichier </p>
                         <input type="text" [(ngModel)]="fileToDelete" placeholder="/sdcard/example.file" />
                     </div>
                     <div class="modal-footer">
-                        <button type="button" (click)="deleteFile(this.devicesListSelection, this.fileToDelete)" class="btn btn-primary">Supprimer</button>
-                        <button type="button" class="btn btn-secondary" (click)="nonDisplayAlertDeleteFile()" data-bs-dismiss="modal">Annuler</button>
+                        <button type="button" (click)="deleteFile(this.devicesListSelection, this.fileToDelete)" class="btn btn-primary" data-bs-dismiss="modal">Supprimer</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
                     </div>
                 </div>
             </div>
@@ -234,18 +204,12 @@
                         <button type="button" class="btn-close" (click)="nonDisplayAlertPullFile()" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <div class="alert alert-success" role="alert" style="display: none;" id="alertSuccesspull">
-                            Fichier téléchargé avec succès !
-                        </div>
-                        <div class="alert alert-danger" role="alert" style="display: none;" id="alertFailedpull">
-                            Attention votre fichier n'a pas été téléchargé !
-                        </div>
                         <p style="color:black">Entrez le nom de fichier </p>
                         <input type="text" id="filePull" [(ngModel)]="fileToPull" placeholder="/sdcard/example.file" />
                     </div>
                     <div class="modal-footer">
-                        <button type="button" (click)="pullFile(this.devicesListSelection, this.fileToPull)" class="btn btn-primary">Télécharger</button>
-                        <button type="button" class="btn btn-secondary" (click)="nonDisplayAlertPullFile()" data-bs-dismiss="modal">Annuler</button>
+                        <button type="button" (click)="pullFile(this.devicesListSelection, this.fileToPull)" class="btn btn-primary" data-bs-dismiss="modal">Télécharger</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
                     </div>
                 </div>
             </div>
@@ -286,7 +250,7 @@
                         <br>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" (click)="shellCommand(this.devicesListSelection, this.shellcmd)">Exécuter</button>
+                        <button type="button" class="btn btn-primary" (click)="shellCommand(this.devicesListSelection, this.shellcmd)" data-bs-dismiss="modal">Exécuter</button>
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
                     </div>
                 </div>
@@ -307,7 +271,7 @@
                         <input type="text" [(ngModel)]="adbcmd" />
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" (click)="adbCommand(this.devicesListSelection, this.adbcmd)">Exécuter</button>
+                        <button type="button" class="btn btn-primary" (click)="adbCommand(this.devicesListSelection, this.adbcmd)" data-bs-dismiss="modal">Exécuter</button>
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
                     </div>
                 </div>
@@ -325,12 +289,6 @@
                         <button type="button" class="btn-close" (click)="nonDisplayAlertAjoutwifi()" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <div class="alert alert-success" role="alert" style="display: none;" id="alertSuccessajoutwifi">
-                            Le Wi-Fi ajouté avec succès !
-                        </div>
-                        <div class="alert alert-danger" role="alert" style="display: none;" id="alertFailedajoutwifi">
-                            Attention le Wi-Fi n'a pas été ajouté !
-                        </div>
                         <div class="form-group">
                             <label for="ssid">ssid</label>
                             <input type="text" [(ngModel)]="wifissid" placeholder="eduroam" class="form-control" id="ssid" aria-describedby="emailHelp">
@@ -371,7 +329,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-primary" (click)="addWifi(this.devicesListSelection, this.wifissid, this.wifipassword, this.wifiPasswordType, this.wifiUsername)" data-bs-dismiss="modal">Ajouter</button>
-                        <button type="button" class="btn btn-secondary" (click)="nonDisplayAlertAjoutwifi()" data-bs-dismiss="modal">Annuler</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
                     </div>
                 </div>
             </div>
