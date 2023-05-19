@@ -15,15 +15,19 @@ export function installPackage(devices: any, packageName: any, timout: any){
     for (const device of devices) {
         if (getDevices().includes(device)) {
 
-            const adbProcess = child_process.spawnSync('adb', ["-s", device, "install","-r -t", packageName], { timeout: timout });
-            output[device] = adbProcess.stdout.toString();
+             try {
+                output[device] = execSync(`adb -s ${device} install -r -t ${packageName}`);
+             } catch (error) {
+                 logger.log("error", "Une erreur est survennue lors de l'installation du "+ packageName+" sur "+device);
+             }
 
         } else {
             output[device] = device + " is not connected";
         }
     }
+
     return output;
-}; //a tester avec front
+};
 
 export function checkPackageInstalled(device: any, packageName: string){
     const packagesList = execSync(`adb -s ${device} shell pm list packages`).toString();
