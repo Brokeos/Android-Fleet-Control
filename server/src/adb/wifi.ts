@@ -2,8 +2,11 @@ import child_process from 'child_process';
 import { shellCmd,syncDelay } from './utils';
 import { checkPackageInstalled, installPackage } from './package';
 import { getLogger } from './logger';
+import path from 'path';
 
-const wifiManagerPackage = "com.steinwurf.adbjoinwifi"
+
+const wifiManagerPackage = "com.steinwurf.adbjoinwifi";
+const wifiManagerPackagePath = path.resolve(__dirname, '../../wifiManager') +"/"+"wifiManager.apk";
 var logger = getLogger();
 
 export function addWifiNetwork(devices: any, ssid: any, passwordType: any, password: any, username: any){
@@ -34,7 +37,7 @@ export function addWifiNetwork(devices: any, ssid: any, passwordType: any, passw
 
 function checkWifiManagerInstalled(device: any) {
     if (!checkPackageInstalled(device, wifiManagerPackage)) {
-        installPackage([device], "wifiManager.apk",10);
+        installPackage([device], wifiManagerPackagePath.replace("dist/",''),10);
     }
 }
 

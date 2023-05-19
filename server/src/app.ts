@@ -8,13 +8,12 @@ config();
 
 const app = Fastify();
 const port = (process.env.PORT || 4201) as number;
-console.log(path.join(__dirname, 'routes'));
+app.register(require('@fastify/multipart'));
 app.register(fastifyAutoload, {
     dir: path.join(__dirname, 'routes'),
     options: { prefix: 'api'}
 });
 app.register(cors);
-app.register(require('@fastify/multipart'));
 app.addHook('onRoute', routeOptions => {
     console.log(`Route ${routeOptions.method} ${routeOptions.url}`);
 });
