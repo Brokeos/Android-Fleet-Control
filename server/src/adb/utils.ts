@@ -61,9 +61,7 @@ export function getDevicesName(devices: any){
         for (var j in res) {
             res[j] = res[j].trim();
             if (res[j].startsWith("name")) {
-                console.log(res[j]);
                 name = res[j].substring(6);
-                console.log(name);
                 break;
             }
         }

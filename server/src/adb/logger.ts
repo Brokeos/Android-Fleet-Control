@@ -18,8 +18,8 @@ const logger = winston.createLogger({
       winston.format.colorize({ all: true }),
       winston.format.timestamp({ format: 'DD/MM/YYYY HH:mm:ss' }),
       winston.format.printf(info => info.timestamp +"|"
-      +info.level.replace(/[^[\]\w\sÀ-ÿ\/.,?!'’]|(?<!\[)\[+/g, '').replace(/39m/g, '').replace(/32m/g, '')
-      +"|"+info.message.replace(/[^[\]\w\sÀ-ÿ\/.,?!'’]|(?<!\[)\[+/g, '').replace(/39m/g, '').replace(/32m/g, '')
+      +info.level.replace(/[^[\]\w\sÀ-ÿ\/.,?!'’]|(?<!\[)\[+/g, '').replace(/3.{1}m/g, '')
+      +"|"+info.message.replace(/[^[\]\w\sÀ-ÿ\/.,?!'’]|(?<!\[)\[+/g, '').replace(/3.{1}m/g, '')
       )
     ),
     transports: [transport]
