@@ -1,5 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { interval } from 'rxjs';
+import { take } from 'rxjs/operators';
 
 import { environment } from 'src/environments/environment';
 
@@ -85,18 +87,23 @@ export class AppComponent {
     Gets all connected devices, store them in this.devices
   */
   getDevices() {
-    this.http.get<any[]>(this.url + '/').subscribe(
-      (response) => {
-        this.devices = response;
-        this.getDeviceNames(this.devices);
-        this.getBatteryLevels(this.devices);
-        if(this.wifi_timer > 60 || this.refresh){
-          this.getWifiConnection(this.devices);
-          this.refresh = false;
-          this.wifi_timer = 0;
-        }
-      },
-      (error) => { this.displayError(error) });
+    interval(5000)
+      .pipe(take(Infinity))
+      .subscribe(() => {
+        this.http.get<any[]>(this.url + '/').subscribe(
+          (response) => {
+            this.devices = response;
+            this.getDeviceNames(this.devices);
+            this.getBatteryLevels(this.devices);
+            if(this.wifi_timer > 60 || this.refresh){
+              this.getWifiConnection(this.devices);
+              this.refresh = false;
+              this.wifi_timer = 0;
+            }
+          },
+          (error) => { this.displayError(error) }
+        );
+      });
   }
 
 
