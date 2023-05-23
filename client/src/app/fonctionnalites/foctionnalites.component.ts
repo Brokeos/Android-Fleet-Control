@@ -443,8 +443,6 @@ export class FoctionnalitesComponent implements OnInit {
     var files = target.files;
     this.fileFormData.delete('file');
     this.fileFormData.append('file', files[0]);
-
-    console.log(this.fileFormData.get("file"))
   }
   /*
     Sends the file to the server
@@ -452,8 +450,8 @@ export class FoctionnalitesComponent implements OnInit {
   pushFile(devices: string[]){
     this.fileFormData.delete('deviceList');
     this.fileFormData.append('deviceList', JSON.stringify(devices)); //formData can't accept array, must be stringified and parsed at other end
-
-    return this.http.post<any>(this.url+'/pushfile', this.fileFormData, this.httpOptions).subscribe(
+     console.log(this.fileFormData.get("file"));
+    return this.http.post<any>(this.url+'/pushfile', this.fileFormData.get("file"), this.httpOptions).subscribe(
       (response) => {
         console.log(response)
         this.successMSG = "Fichier envoyé avec succès !"

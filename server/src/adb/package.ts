@@ -59,7 +59,7 @@ export function uninstallPackage(devices: any, packageName: any){
               logger.log("info", "le package "+packageName+" a été désinstaller de l'appareil "+device);
           } catch (error) {
             output[device] = "ERROR:"+` package inconnu sur ${device}`;
-            logger.log("info", "le package "+packageName+"est inconnu de l'appareil "+device);
+            logger.log("error", "le package "+packageName+" est inconnu de l'appareil "+device);
           }
     }
 
