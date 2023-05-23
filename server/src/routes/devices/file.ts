@@ -10,7 +10,7 @@ module.exports = async function (app : FastifyInstance) {
     Puis supprime le fichier du serveur.
 */
     app.post('/pushfile', async function (request : FastifyRequest, reply : FastifyReply) {
-        const {file} = request.files as any;
+        const {file} = request.file as any;
         if(file == undefined || file == null){
             reply.status(500).send({response : "Pas de fichier uploadé"});
         }

@@ -653,12 +653,12 @@ recordScreen(devices: string[], seconds: number){
         for(var i in files){
           this.downloadFile(i, files[i]);
         }
-        this.successMSG = "La capture d'écran c'est bien passé !"
+        this.successMSG = "La capture d'écran s'est bien passé !"
         this.isOk = true;
         this.topbar_info.printInfo(this.successMSG, this.isOk);
       },
       (error) => { this.displayError(error)
-        this.errorMSG = "Attention la capture d'écran ne c'est pas bien passé ! Erreur : " + error.message + ".";
+        this.errorMSG = "Attention la capture d'écran ne s'est pas bien passé ! Erreur : " + error.message + ".";
         this.isOk = false;
         this.topbar_info.printInfo(this.errorMSG, this.isOk);
       });
