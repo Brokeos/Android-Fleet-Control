@@ -14,8 +14,7 @@ export class FoctionnalitesComponent implements OnInit {
   title = 'FleetControl';
   url = "http://localhost:4201/api/devices";
 
-  successMSG:string = ""
-  errorMSG:string = ""
+  msg:string = ""
   isOk:boolean = false
   @ViewChild(TopbarInfoComponent, {static : true})topbar_info: TopbarInfoComponent;
   httpOptions = {
@@ -213,20 +212,20 @@ export class FoctionnalitesComponent implements OnInit {
           console.log(response);
           this.output=JSON.stringify(response).split(',');
           this.downloadCommandOutput("sortie_Shell_commande.txt", this.output);
-          this.successMSG = "La commande a été exécutée !"
+          this.msg = "La commande a été exécutée !"
           this.isOk = true;
-          this.topbar_info.printInfo(this.successMSG, this.isOk);
+          this.topbar_info.printInfo(this.msg, this.isOk);
   
         },
         (error) => { this.displayError(error)
-          this.errorMSG = "La commande n'a pas été exécutée ! Erreur : " + error.message + ".";
+          this.msg = "La commande n'a pas été exécutée ! Erreur : " + error.message + ".";
           this.isOk = false;
-          this.topbar_info.printInfo(this.errorMSG, this.isOk);
+          this.topbar_info.printInfo(this.msg, this.isOk);
         });
     } else {
-        this.errorMSG = "La commande ne doit pas être vide !";
+        this.msg = "La commande ne doit pas être vide !";
         this.isOk = false;
-        this.topbar_info.printInfo(this.errorMSG, this.isOk);
+        this.topbar_info.printInfo(this.msg, this.isOk);
     }
   }
 
@@ -242,21 +241,22 @@ export class FoctionnalitesComponent implements OnInit {
           console.log(response);
           this.output=JSON.stringify(response).split(',');
           this.downloadCommandOutput("sortie_ADB_commande.txt", this.output);
-          this.successMSG = "La commande a été exécutée !"
+          this.msg = "La commande a été exécutée !"
           this.isOk = true;
-          this.topbar_info.printInfo(this.successMSG, this.isOk);
+          this.topbar_info.printInfo(this.msg, this.isOk);
   
         },
         (error) => { this.displayError(error)
-          this.errorMSG = "La commande n'a pas été exécutée ! Erreur : " + error.message + ".";
+          this.msg = "La commande n'a pas été exécutée ! Erreur : " + error.message + ".";
           this.isOk = false;
-          this.topbar_info.printInfo(this.errorMSG, this.isOk);
+          this.topbar_info.printInfo(this.msg, this.isOk);
         });
     } else {
-      this.errorMSG = "La commande ne doit pas être vide !";
+      this.msg = "La commande ne doit pas être vide !";
       this.isOk = false;
-      this.topbar_info.printInfo(this.errorMSG, this.isOk);
+      this.topbar_info.printInfo(this.msg, this.isOk);
     }
+
     
   }
   
@@ -274,24 +274,44 @@ export class FoctionnalitesComponent implements OnInit {
   */
   installPackage(devices: string[], timeout: number){
 
+    let isOk = true;
+    let listNotOk = "";
+
     this.packageFormData.delete('extras');
     this.packageFormData.append('extras', JSON.stringify({deviceList: devices, timeout: timeout})); //formData can't accept array or numbers, must be stringified and parsed at other end
-
 
     return this.http.post<any>(this.url+'/installpackage', this.packageFormData).subscribe(
       (response) => {
         console.log(response);
-        this.successMSG = "Package installé avec succès !";
-        this.isOk = true;
-        this.topbar_info.printInfo(this.successMSG, this.isOk);
+
+        devices.forEach(device => {
+          let msg = response[device].msg
+          if(response[device].status == "SUCCESS"){
+            isOk = isOk && true
+          } else {
+            isOk = isOk && false
+            listNotOk += device + " message :" + msg + ". ";
+          }
+        });
+
+        if(isOk){
+          this.msg = "Package installé avec succès !";
+          this.isOk = true;
+          this.topbar_info.printInfo(this.msg, this.isOk);
+        } else {
+          this.msg = "Erreur lors de l'installation du paquet : " + listNotOk;
+          this.isOk = true;
+          this.topbar_info.printInfo(this.msg, this.isOk);
+        }
+        
         var inputfile = document.getElementById("install") as HTMLInputElement; 
         inputfile.value="";
       },
       (error) => { 
         this.displayError(error);
-        this.errorMSG = "Attention votre package n'a pas été installé ! Erreur : " + error.message + ".";
+        this.msg = "Attention votre package n'a pas été installé ! Erreur : " + error.message + ".";
         this.isOk = false;
-        this.topbar_info.printInfo(this.errorMSG, this.isOk);
+        this.topbar_info.printInfo(this.msg, this.isOk);
       });
   }
 
@@ -303,14 +323,14 @@ export class FoctionnalitesComponent implements OnInit {
     this.http.post<any>(this.url+'/checkpackageinstalled', {deviceList: devices, packageName: packageName}).subscribe(
       (response) => {
         console.log(response);
-        this.successMSG = "Recherche de paquet exécuté avec succés !";
+        this.msg = "Recherche de paquet exécuté avec succés !";
         this.isOk = true;
-        this.topbar_info.printInfo(this.successMSG, this.isOk);
+        this.topbar_info.printInfo(this.msg, this.isOk);
       },
       (error) => { this.displayError(error)
-        this.errorMSG = "Recherche de paquet non exécuté ! Erreur : " + error.message + "." ;
+        this.msg = "Recherche de paquet non exécuté ! Erreur : " + error.message + "." ;
         this.isOk = true;
-        this.topbar_info.printInfo(this.errorMSG, this.isOk);
+        this.topbar_info.printInfo(this.msg, this.isOk);
       });
   }
   
@@ -322,14 +342,14 @@ export class FoctionnalitesComponent implements OnInit {
     this.http.post<any[]>(this.url+'/installedpackages', {deviceList: devices}).subscribe(
       (response) => {
         console.log(response);
-        this.successMSG = "Recherche de tous les paquets exécuté avec succés !";
+        this.msg = "Recherche de tous les paquets exécuté avec succés !";
         this.isOk = true;
-        this.topbar_info.printInfo(this.successMSG, this.isOk);
+        this.topbar_info.printInfo(this.msg, this.isOk);
       },
       (error) => { this.displayError(error)
-        this.errorMSG = "Recherche de tous les paquets non exécuté ! Erreur : " + error.message + "." ;
+        this.msg = "Recherche de tous les paquets non exécuté ! Erreur : " + error.message + "." ;
         this.isOk = true;
-        this.topbar_info.printInfo(this.errorMSG, this.isOk);
+        this.topbar_info.printInfo(this.msg, this.isOk);
       });
   }
 
@@ -396,17 +416,38 @@ export class FoctionnalitesComponent implements OnInit {
     Uninstall one package on all selected devices
   */
   uninstallPackage(devices: string[], packageName: string){
+    let isOk = true
+    let listNotOk = ""
+
     this.http.post<any>(this.url+'/uninstallpackage', {deviceList: devices, packageName: packageName}).subscribe(
       (response) => {
+
         console.log(response);
-        this.successMSG = "Désinstallation du package exécuté avec succés !";
-        this.isOk = true;
-        this.topbar_info.printInfo(this.successMSG, this.isOk);
+
+        this.devicesListSelection.forEach(device => {
+          let msg = response[packageName][device].msg
+          if(response[packageName][device].status == "SUCCESS"){
+            isOk = isOk && true;
+          } else {
+            isOk = isOk && false;
+            listNotOk += device + " message :" + msg + ". ";
+          }
+        });
+
+        if(isOk){
+          this.msg = "Désinstallation du package exécuté avec succés !";
+          this.isOk = true;
+          this.topbar_info.printInfo(this.msg, this.isOk);
+        } else {
+          this.msg = "Erreur lors de la désinstallation sur les tablettes : " + listNotOk;
+          this.isOk = false;
+          this.topbar_info.printInfo(this.msg, this.isOk);
+        }
       },
       (error) => { this.displayError(error)
-        this.errorMSG = "Désinstallation du package exécuté avec ERREUR ! Erreur : " + error.message;
+        this.msg = "Désinstallation du package exécuté avec ERREUR ! Erreur : " + error.message;
         this.isOk = false;
-        this.topbar_info.printInfo(this.errorMSG, this.isOk);
+        this.topbar_info.printInfo(this.msg, this.isOk);
       });
   }
 
@@ -415,21 +456,46 @@ export class FoctionnalitesComponent implements OnInit {
     Uninstall multiple packages on all selected devices
   */
   uninstallMultiplePackages(devices: string[], packageList: string[]){
+    let isOk = true
+    let listNotOk = ""
+
     this.http.post<any>(this.url+'/uninstallmuliplepackages', {deviceList: devices, packageList: packageList}).subscribe(
       (response) => {
+
         console.log(response);
-        this.successMSG = "Désinstallation des packages exécuté avec succés !";
-        this.isOk = true;
-        this.topbar_info.printInfo(this.successMSG, this.isOk);
+
+        packageList.forEach(paquet => {
+
+          devices.forEach(device => {
+            let msg = response[paquet][device].msg
+            if(response[paquet][device].status == "SUCCESS"){
+              isOk = isOk && true;
+            } else {
+              isOk = isOk && false;
+              listNotOk += device + " message :" + msg + ". ";
+            }
+          });
+        });
+
+        if(isOk){
+          this.msg = "Désinstallation des packages exécuté avec succés !";
+          this.isOk = true;
+          this.topbar_info.printInfo(this.msg, this.isOk);
+        } else {
+          this.msg = "Erreur lors de la désinstallation sur les tablettes : " + listNotOk;
+          this.isOk = false;
+          this.topbar_info.printInfo(this.msg, this.isOk);
+        }
+        
         var inputfile = document.getElementById("uninstall") as HTMLInputElement; 
         inputfile.value="";
 
       },
       (error) => { 
         this.displayError(error);
-        this.errorMSG = "Désinstallation des packages exécuté avec ERREUR ! Erreur : " + error.message;
+        this.msg = "Désinstallation des packages exécuté avec ERREUR ! Erreur : " + error.message;
         this.isOk = false;
-        this.topbar_info.printInfo(this.errorMSG, this.isOk);
+        this.topbar_info.printInfo(this.msg, this.isOk);
       });
 
     this.packagesToUninstall = [];
@@ -448,20 +514,43 @@ export class FoctionnalitesComponent implements OnInit {
     Sends the file to the server
   */
   pushFile(devices: string[]){
+    let isOk = true;
+    let listNotOk = "";
+
     this.fileFormData.delete('deviceList');
     this.fileFormData.append('deviceList', JSON.stringify(devices)); //formData can't accept array, must be stringified and parsed at other end
-     console.log(this.fileFormData.get("file"));
+    
+    console.log(this.fileFormData.get("file"));
+    
     return this.http.post<any>(this.url+'/pushfile', this.fileFormData.get("file"), this.httpOptions).subscribe(
       (response) => {
         console.log(response)
-        this.successMSG = "Fichier envoyé avec succès !"
-        this.isOk = true;
-        this.topbar_info.printInfo(this.successMSG, this.isOk);
+
+        devices.forEach(device => {
+          let msg = response[device].msg
+          if(response[device].status == "SUCCESS") {
+            isOk = isOk && true
+          } else {
+            isOk = isOk && false
+            listNotOk += device + " message : " + msg + ". ";
+          }
+        }); 
+
+        if(isOk){
+          this.msg = "Fichier envoyé avec succès !"
+          this.isOk = true;
+          this.topbar_info.printInfo(this.msg, this.isOk);
+        } else {
+          this.msg = "Erreur lors de l'envoi sur les tablettes : " + listNotOk;
+          this.isOk = false;
+          this.topbar_info.printInfo(this.msg, this.isOk);
+        }
+        
       },
       (error) => { this.displayError(error)  
-        this.errorMSG = "Attention votre fichier n'a pas été envoyé ! Erreur : " + error.message + ".";
+        this.msg = "Attention votre fichier n'a pas été envoyé ! Erreur : " + error.message + ".";
         this.isOk = false;
-        this.topbar_info.printInfo(this.errorMSG, this.isOk);   
+        this.topbar_info.printInfo(this.msg, this.isOk);   
       });
   }
   
@@ -470,25 +559,45 @@ export class FoctionnalitesComponent implements OnInit {
 
   */
   deleteFile(devices: string[], filePath: string){
+    let isOk = true;
+    let listNotOk = "";
 
     if(filePath != ""){
       this.http.post<any>(this.url+'/deletefile', {deviceList: devices, filePath: filePath}).subscribe(
         (response) => {
           console.log(response);
-          this.successMSG = "Fichier supprimé avec succès !"
-          this.isOk = true;
-          this.topbar_info.printInfo(this.successMSG, this.isOk);
+          
+          devices.forEach(device => {
+            let msg = response[device].msg;
+            if(response[device].status == "SUCCESS") {
+              isOk = isOk && true
+            } else {
+              isOk = isOk && false
+              listNotOk = device + " message : " + msg + ". "
+            }
+          }); 
+
+          if(isOk){
+            this.msg = "Fichier supprimé avec succès !"
+            this.isOk = true;
+            this.topbar_info.printInfo(this.msg, this.isOk);
+          } else {
+            this.msg = "Fichier non supprimé ! " + listNotOk
+            this.isOk = true;
+            this.topbar_info.printInfo(this.msg, this.isOk);
+          }
+    
         },
         (error) => { 
           this.displayError(error);
-          this.errorMSG = "Attention votre fichier n'a pas été supprimé ! Erreur : " + error.message + ".";
+          this.msg = "Attention votre fichier n'a pas été supprimé ! Erreur : " + error.message + ".";
           this.isOk = false;
-          this.topbar_info.printInfo(this.errorMSG, this.isOk);   
+          this.topbar_info.printInfo(this.msg, this.isOk);   
         });
     } else {
-        this.errorMSG = "Attention votre fichier n'a pas été téléchargé ! Erreur : Chemin du fichier vide.";
+        this.msg = "Attention votre fichier n'a pas été téléchargé ! Erreur : Chemin du fichier vide.";
         this.isOk = false;
-        this.topbar_info.printInfo(this.errorMSG, this.isOk);
+        this.topbar_info.printInfo(this.msg, this.isOk);
     }
   }
   
@@ -500,32 +609,45 @@ export class FoctionnalitesComponent implements OnInit {
   */
   pullFile(devices: string[], filePath: string){
 
+    let isOk = true
+    let listNotOk = ""
+
     if(filePath != ""){
       this.http.post<any>(this.url+'/pullfile', {deviceList: devices, filePath: filePath}).subscribe(
         (response) => {
+
           console.log(response);
-          this.successMSG = "Fichier téléchargé avec succès !"
-          this.isOk = true;
-          this.topbar_info.printInfo(this.successMSG, this.isOk);
+
           for(var i in response){
             if(response[i].success == true){
               this.downloadFile(response[i].filename, response[i].data);
             }
             else{
-              console.log(response[i].error);
+              isOk = isOk && false
+              listNotOk += i + " message : " + response[i].error + ". "
             }
+          }
+
+          if(isOk){
+            this.msg = "Les fichiers ont bien été téléchargés !";
+            this.isOk = true;
+            this.topbar_info.printInfo(this.msg, this.isOk);
+          } else {
+            this.msg = "Les fichiers n'ont pas été téléchargés ! " + listNotOk;
+            this.isOk = false;
+            this.topbar_info.printInfo(this.msg, this.isOk);
           }
         },
         (error) => { 
           this.displayError(error);
-          this.errorMSG = "Attention votre fichier n'a pas été téléchargé ! Erreur : " + error.message + ".";
+          this.msg = "Attention votre fichier n'a pas été téléchargé ! Erreur : " + error.message + ". Regarder les logs";
           this.isOk = false;
-          this.topbar_info.printInfo(this.errorMSG, this.isOk);
+          this.topbar_info.printInfo(this.msg, this.isOk);
         });
     } else {
-        this.errorMSG = "Attention votre fichier n'a pas été téléchargé ! Erreur : Chemin du fichier vide.";
+        this.msg = "Attention votre fichier n'a pas été téléchargé ! Erreur : Chemin du fichier vide.";
         this.isOk = false;
-        this.topbar_info.printInfo(this.errorMSG, this.isOk);
+        this.topbar_info.printInfo(this.msg, this.isOk);
     }
   }
   
@@ -540,17 +662,17 @@ export class FoctionnalitesComponent implements OnInit {
     this.http.post<any>(this.url+'/addwifi', {deviceList: devices, ssid: ssid, passwordType: passwordType, password: password, username: username}).subscribe(
       (response) => {
         console.log(response);
-        this.successMSG = "Le Wi-Fi a été ajouté avec succès !"
+        this.msg = "Le Wi-Fi a été ajouté avec succès !"
         this.isOk = true;
-        this.topbar_info.printInfo(this.successMSG, this.isOk);
+        this.topbar_info.printInfo(this.msg, this.isOk);
 
         this.refresh.emit("");
       },
       (error) => { 
         this.displayError(error);
-        this.errorMSG = "Attention le Wi-Fi n'a pas été ajouté ! Erreur : " + error.message + ".";
+        this.msg = "Attention le Wi-Fi n'a pas été ajouté ! Erreur : " + error.message + ".";
         this.isOk = false;
-        this.topbar_info.printInfo(this.errorMSG, this.isOk);
+        this.topbar_info.printInfo(this.msg, this.isOk);
       });
   }
 
@@ -562,14 +684,14 @@ export class FoctionnalitesComponent implements OnInit {
     this.http.post<any>(this.url+'/disablewifi', {deviceList: devices, toggle: false}).subscribe(
       (response) => {
         console.log(response);
-        this.successMSG = "Le Wi-Fi a bien été désactivé avec succès !"
+        this.msg = "Le Wi-Fi a bien été désactivé avec succès !"
         this.isOk = true;
-        this.topbar_info.printInfo(this.successMSG, this.isOk);
+        this.topbar_info.printInfo(this.msg, this.isOk);
       },
       (error) => { this.displayError(error)
-        this.errorMSG = "Attention le Wi-Fi n'a pas été désactivé ! Erreur : " + error.message + ".";
+        this.msg = "Attention le Wi-Fi n'a pas été désactivé ! Erreur : " + error.message + ".";
         this.isOk = false;
-        this.topbar_info.printInfo(this.errorMSG, this.isOk);
+        this.topbar_info.printInfo(this.msg, this.isOk);
       });
       
   }
@@ -582,14 +704,14 @@ export class FoctionnalitesComponent implements OnInit {
     this.http.post<any>(this.url+'/enablewifi', {deviceList: devices, toggle: true}).subscribe(
       (response) => {
         console.log(response);
-        this.successMSG = "Le Wi-Fi a bien été activé avec succès !"
+        this.msg = "Le Wi-Fi a bien été activé avec succès !"
         this.isOk = true;
-        this.topbar_info.printInfo(this.successMSG, this.isOk);
+        this.topbar_info.printInfo(this.msg, this.isOk);
       },
       (error) => { this.displayError(error)
-        this.errorMSG = "Attention le Wi-Fi n'a pas été activé ! Erreur : " + error.message + ".";
+        this.msg = "Attention le Wi-Fi n'a pas été activé ! Erreur : " + error.message + ".";
         this.isOk = false;
-        this.topbar_info.printInfo(this.errorMSG, this.isOk);
+        this.topbar_info.printInfo(this.msg, this.isOk);
       });
   }
 
@@ -601,14 +723,14 @@ export class FoctionnalitesComponent implements OnInit {
     this.http.post<any>(this.url+'/forgetallwifi', {deviceList: devices}).subscribe(
       (response) => {
         console.log(response);
-        this.successMSG = "Les connexion Wi-Fi ont bien été oubliés !"
+        this.msg = "Les connexion Wi-Fi ont bien été oubliés !"
         this.isOk = true;
-        this.topbar_info.printInfo(this.successMSG, this.isOk);
+        this.topbar_info.printInfo(this.msg, this.isOk);
       },
       (error) => { this.displayError(error)
-        this.errorMSG = "Attention les connexion Wi-Fi n'ont pas été oubliés ! Erreur : " + error.message + ".";
+        this.msg = "Attention les connexion Wi-Fi n'ont pas été oubliés ! Erreur : " + error.message + ".";
         this.isOk = false;
-        this.topbar_info.printInfo(this.errorMSG, this.isOk);
+        this.topbar_info.printInfo(this.msg, this.isOk);
       });
   }
 
@@ -625,14 +747,14 @@ recordScreen(devices: string[], seconds: number){
       for(var i in files){
         this.downloadFile(i, files[i]);
       }
-      this.successMSG = "La capture c'est bien passé !"
+      this.msg = "La capture c'est bien passé !"
       this.isOk = true;
-      this.topbar_info.printInfo(this.successMSG, this.isOk);
+      this.topbar_info.printInfo(this.msg, this.isOk);
     },
     (error) => { this.displayError(error)
-      this.errorMSG = "Attention la capture ne c'est pas bien passé ! Erreur : " + error.message + ".";
+      this.msg = "Attention la capture ne c'est pas bien passé ! Erreur : " + error.message + ".";
       this.isOk = false;
-      this.topbar_info.printInfo(this.errorMSG, this.isOk);
+      this.topbar_info.printInfo(this.msg, this.isOk);
     });
   }
 
@@ -651,14 +773,14 @@ recordScreen(devices: string[], seconds: number){
         for(var i in files){
           this.downloadFile(i, files[i]);
         }
-        this.successMSG = "La capture d'écran s'est bien passé !"
+        this.msg = "La capture d'écran s'est bien passé !"
         this.isOk = true;
-        this.topbar_info.printInfo(this.successMSG, this.isOk);
+        this.topbar_info.printInfo(this.msg, this.isOk);
       },
       (error) => { this.displayError(error)
-        this.errorMSG = "Attention la capture d'écran ne s'est pas bien passé ! Erreur : " + error.message + ".";
+        this.msg = "Attention la capture d'écran ne s'est pas bien passé ! Erreur : " + error.message + ".";
         this.isOk = false;
-        this.topbar_info.printInfo(this.errorMSG, this.isOk);
+        this.topbar_info.printInfo(this.msg, this.isOk);
       });
   }
 
@@ -670,16 +792,17 @@ recordScreen(devices: string[], seconds: number){
     this.http.post<any>(this.url+'/clean', {deviceList: devices}).subscribe(
       (response) => {
         console.log(response);
-        this.successMSG = "Les applications non système des appareils sont supprimées avec succès!"
+        this.msg = "Les applications non système des appareils sont supprimées avec succès!"
         this.isOk = true;
-        this.topbar_info.printInfo(this.successMSG, this.isOk);
+        this.topbar_info.printInfo(this.msg, this.isOk);
       },
       (error) => { 
         this.displayError(error);
-        this.errorMSG = "Attention une erreur est survenue lors de la suppression ! Erreur : " + error.message + ".";
+        this.msg = "Attention une erreur est survenue lors de la suppression ! Erreur : " + error.message + ".";
         this.isOk = false;
-        this.topbar_info.printInfo(this.errorMSG, this.isOk);
+        this.topbar_info.printInfo(this.msg, this.isOk);
       });
+      console.log("r")
   }
 
 }
