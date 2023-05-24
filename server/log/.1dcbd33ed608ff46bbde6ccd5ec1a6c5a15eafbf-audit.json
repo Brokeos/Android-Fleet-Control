@@ -14,6 +14,16 @@
             "date": 1684408080448,
             "name": "/home/etud/Documents/M2/Projet/Android-Fleet-Control/server/log/2023-05-18-logs.log",
             "hash": "20a69fc63f1b3bdca47ecdc37279a9a5fd63b22b8f8a69131f23cebb45561135"
+        },
+        {
+            "date": 1684833670798,
+            "name": "/home/etud/Documents/M2/Projet/Android-Fleet-Control/server/log/2023-05-23-logs.log",
+            "hash": "6b5331c1ae556bf40f12fa55395b267d8f7a72ad8d0b72258551ffc6bf1ac5a6"
+        },
+        {
+            "date": 1684925134812,
+            "name": "/home/etud/Documents/M2/Projet/Android-Fleet-Control/server/log/2023-05-24-logs.log",
+            "hash": "8381f18d9631a49b7cce46a335f7eaf4e59649410ba66e2295e490aa8a95dd0f"
         }
     ],
     "hashType": "sha256"
