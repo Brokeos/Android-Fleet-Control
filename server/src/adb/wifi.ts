@@ -20,14 +20,18 @@ export function addWifiNetwork(devices: any, ssid: any, passwordType: any, passw
         checkWifiManagerInstalled(device); //make sure wifi manager is installed
         try {
             if (passwordType != "none" && passwordType != "EAP") {
-                output[device] = shellCmd(device, ["am", "start", "-n", "com.steinwurf.adbjoinwifi/.MainActivity", "-e", "ssid", ssid, "-e", "password_type", passwordType, "-e", "password", password]);
+                shellCmd(device, ["am", "start", "-n", "com.steinwurf.adbjoinwifi/.MainActivity", "-e", "ssid", ssid, "-e", "password_type", passwordType, "-e", "password", password]);
+                output[device] = { status : "SUCCESS", msg : `Le réseau wifi ${ssid} a été ajouté`};
             } else if (passwordType == "EAP") {
-                output[device] = shellCmd(device, ["am", "start", "-n", "com.steinwurf.adbjoinwifi/.MainActivity", "-e", "ssid", ssid, "-e", "password_type", "EAP", "-e", "password", password, "-e", "username", username]);
+                shellCmd(device, ["am", "start", "-n", "com.steinwurf.adbjoinwifi/.MainActivity", "-e", "ssid", ssid, "-e", "password_type", "EAP", "-e", "password", password, "-e", "username", username]);
+                output[device] = { status : "SUCCESS", msg : `Le réseau wifi ${ssid} a été ajouté`};
             } else {
-                output[device] = shellCmd(device, ["am", "start", "-n", "com.steinwurf.adbjoinwifi/.MainActivity", "-e", "ssid", ssid]);
+                shellCmd(device, ["am", "start", "-n", "com.steinwurf.adbjoinwifi/.MainActivity", "-e", "ssid", ssid]);
+                output[device] = { status : "SUCCESS", msg : `Le réseau wifi ${ssid} a été ajouté`};
             }
+             logger.log("info", device+`: Le réseau wifi ${ssid} a été ajouté`);
         } catch (e) {
-            output[device] = e;
+            output[device] = { status : "ERROR", msg : e };
             logger.log("error", device+": "+e);
         }
     }
@@ -92,23 +96,29 @@ export function toggleWifi(devices: any, bool: boolean){
             output[device] = shellCmd(device, ["svc", "wifi", "disable"]);
         }
         syncDelay(3 * 1000);
-        logger.log("info", device+": résultat de "+(bool ? "l'activation ":"la désactivation ")+" du wifi: "+checkWifiEnabled(devices)[device]);
+        logger.log("info", device+": résultat de "+(bool ? "l'activation ":"la désactivation ")+" du wifi: "+checkWifiEnabled(devices)[device].status);
     }
-
     syncDelay(3 * 1000);
     return checkWifiEnabled(devices);
 };
 
 function checkWifiEnabled(devices: any) {
 
-    let output: { [key: string]: boolean } = {};
+    let output: { [key: string]: any } = {};
 
     for (const device of devices) {
-        var res: string = shellCmd(device, ["dumpsys", "wifi"]);
-        let temp: string[] = res.split("\n");
+        try{
+            var res: string = shellCmd(device, ["dumpsys", "wifi"]);
+            let temp: string[] = res.split("\n");
 
-        output[device] = (temp[0] == "Wi-Fi is enabled");
-        logger.log("info", device+": Wifi activé ? "+(temp[0] == "Wi-Fi is enabled"));
+            output[device] = (temp[0] == "Wi-Fi is enabled") ? { status : "SUCCESS", msg : "le wifi est activé " } : { status : "SUCCESS", msg : "le wifi n'est pas activé " };
+            logger.log("info", device+": Wifi activé ? "+(temp[0] == "Wi-Fi is enabled"));
+        }
+        catch(error){
+            output[device] = { status : "ERROR", msg : error };
+            logger.log("error", "une erreur est survenue "+error);
+        }
+
     }
     return output;
 }

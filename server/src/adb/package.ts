@@ -16,8 +16,10 @@ export function installPackage(devices: any, packageName: any, timout: any){
         if (getDevices().includes(device)) {
 
              try {
-                output[device] = execSync(`adb -s ${device} install -r -t ${packageName}`);
+                execSync(`adb -s ${device} install -r -t ${packageName}`);
+                output[device] = { status : "SUCCESS", msg : "le package "+packageName+" a été installé" };
              } catch (error) {
+                output[device] = { status : "ERROR", msg : error };
                  logger.log("error", "Une erreur est survennue lors de l'installation du "+ packageName+" sur "+device);
              }
 
@@ -51,15 +53,15 @@ export function getPackages(devices: any){
 
 export function uninstallPackage(devices: any, packageName: any){
 
-    let output: { [key: string]: string } = {};
+    let output: { [key: string]: any } = {};
     for (const device of devices) {
           try {
               execSync(`adb -s ${device} uninstall ${packageName}`);
-              output[device] = "SUCCES";
-              logger.log("info", "le package "+packageName+" a été désinstaller de l'appareil "+device);
+              output[device] = { status : "SUCCESS", msg : "le package "+packageName+" a été désinstallé" };
+              logger.log("info", "le package "+packageName+" a été désinstallé de l'appareil "+device);
           } catch (error) {
-            output[device] = "ERROR:"+` package inconnu sur ${device}`;
-            logger.log("error", "le package "+packageName+" est inconnu de l'appareil "+device);
+            output[device] = { status : "ERROR", msg : `le ${packageName} n'est pas installé sur ${device}` };
+            logger.log("error", `le ${packageName} n'est pas installé sur ${device}`);
           }
     }
 
