@@ -51,11 +51,11 @@ module.exports = async function (app : FastifyInstance) {
                 let data = fs.readFileSync(newFileName, {encoding : 'base64', flag : 'r' });
 
                 // @ts-ignore
-                res[deviceList[i]] = {succes : true, data : data, filename : newFileName};
+                res[deviceList[i]] = {status : "SUCCES", data : data, filename : newFileName};
                 fs.rm(newFileName, () => {});
             } else {
                 // @ts-ignore
-                res[deviceList[i]] = { success: false, error: "File " + filePath + " does not exist on device " + deviceList[i] };
+                res[deviceList[i]] = { status: "ERROR", error: "File " + filePath + " does not exist on device " + deviceList[i] };
             }
         }
 

@@ -76,7 +76,7 @@ module.exports = async function (app : FastifyInstance) {
 //Nettoie les machines. 
     app.post('/clean', async function (request : FastifyRequest, reply : FastifyReply) {
         const {deviceList} = request.body as any;
-        let status: { [key: string]: boolean } = {};
+        let status: { [key: string]: any } = {};
         const packageForAllDevices = Array.from(new Set(Object.values(getPackages(deviceList)).flat()));
 
         uninstallMuliplePackages(deviceList, packageForAllDevices);
@@ -84,7 +84,7 @@ module.exports = async function (app : FastifyInstance) {
         //on vérifie que toutes les devices sont clean
         const allDevicesCleanned = getPackages(deviceList);
         for(const device of deviceList){
-          status[device] = (allDevicesCleanned[device].length == 0);
+          status[device] = (allDevicesCleanned[device].length == 0) ? { status : "SUCCESS", msg : "l'appareil a été nettoyé " } : { status : "ERROR", msg : "l'appareil n'a pas été nettoyé " };
         }
 
 

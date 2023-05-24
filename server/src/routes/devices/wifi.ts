@@ -6,9 +6,9 @@ module.exports = async function (app : FastifyInstance) {
     app.post('/addwifi', async function (request : FastifyRequest, reply : FastifyReply) {
         const{deviceList, ssid, passwordType, password, username} = request.body as any;
         
-        addWifiNetwork(deviceList, ssid, passwordType, password, username);
+        const res = addWifiNetwork(deviceList, ssid, passwordType, password, username);
 
-        const res = checkWifiNetwork(deviceList);
+        checkWifiNetwork(deviceList);
         
         reply.send(JSON.stringify(res));
     });
