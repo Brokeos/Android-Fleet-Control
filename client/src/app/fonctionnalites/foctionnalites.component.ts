@@ -618,15 +618,17 @@ export class FoctionnalitesComponent implements OnInit {
 
           console.log(response);
 
-          for(var i in response){
-            if(response[i].success == true){
-              this.downloadFile(response[i].filename, response[i].data);
+          devices.forEach(device => {
+            let msg = response[device].msg
+            console.log(response[device].status)
+            if(response[device].status == "SUCCESS"){
+              this.downloadFile(response[device].filename, response[device].data);
             }
             else{
               isOk = isOk && false
-              listNotOk += i + " message : " + response[i].error + ". "
+              listNotOk += device + " message : " + msg + ". "
             }
-          }
+          });
 
           if(isOk){
             this.msg = "Les fichiers ont bien été téléchargés !";
