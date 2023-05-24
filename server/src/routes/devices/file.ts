@@ -51,7 +51,7 @@ module.exports = async function (app : FastifyInstance) {
                 let data = fs.readFileSync(newFileName, {encoding : 'base64', flag : 'r' });
 
                 // @ts-ignore
-                res[deviceList[i]] = {status : "SUCCES", data : data, filename : newFileName};
+                res[deviceList[i]] = {status : "SUCCESS", data : data, filename : newFileName};
                 fs.rm(newFileName, () => {});
             } else {
                 // @ts-ignore
