@@ -283,7 +283,6 @@ export class FoctionnalitesComponent implements OnInit {
     return this.http.post<any>(this.url+'/installpackage', this.packageFormData).subscribe(
       (response) => {
         console.log(response);
-<<<<<<< HEAD
 
         devices.forEach(device => {
           let msg = response[device].msg
@@ -305,11 +304,6 @@ export class FoctionnalitesComponent implements OnInit {
           this.topbar_info.printInfo(this.msg, this.isOk);
         }
         
-=======
-        this.msg = "Package installé avec succès !";
-        this.isOk = true;
-        this.topbar_info.printInfo(this.msg, this.isOk);
->>>>>>> 0cf26ca10d31fcab85ea35970915f1ddad1b4d86
         var inputfile = document.getElementById("install") as HTMLInputElement; 
         inputfile.value="";
       },
@@ -432,11 +426,7 @@ export class FoctionnalitesComponent implements OnInit {
 
         this.devicesListSelection.forEach(device => {
           let msg = response[packageName][device].msg
-<<<<<<< HEAD
           if(response[packageName][device].status == "SUCCESS"){
-=======
-          if(response[packageName][device].status == "SUCCES"){
->>>>>>> 0cf26ca10d31fcab85ea35970915f1ddad1b4d86
             isOk = isOk && true;
           } else {
             isOk = isOk && false;
@@ -475,17 +465,10 @@ export class FoctionnalitesComponent implements OnInit {
         console.log(response);
 
         packageList.forEach(paquet => {
-<<<<<<< HEAD
 
           devices.forEach(device => {
             let msg = response[paquet][device].msg
             if(response[paquet][device].status == "SUCCESS"){
-=======
-          
-          devices.forEach(device => {
-            let msg = response[paquet][device].msg
-            if(response[paquet][device].status == "SUCCES"){
->>>>>>> 0cf26ca10d31fcab85ea35970915f1ddad1b4d86
               isOk = isOk && true;
             } else {
               isOk = isOk && false;
@@ -545,11 +528,7 @@ export class FoctionnalitesComponent implements OnInit {
 
         devices.forEach(device => {
           let msg = response[device].msg
-<<<<<<< HEAD
           if(response[device].status == "SUCCESS") {
-=======
-          if(response[device].status == "SUCCES") {
->>>>>>> 0cf26ca10d31fcab85ea35970915f1ddad1b4d86
             isOk = isOk && true
           } else {
             isOk = isOk && false
@@ -590,11 +569,7 @@ export class FoctionnalitesComponent implements OnInit {
           
           devices.forEach(device => {
             let msg = response[device].msg;
-<<<<<<< HEAD
             if(response[device].status == "SUCCESS") {
-=======
-            if(response[device].status == "SUCCES") {
->>>>>>> 0cf26ca10d31fcab85ea35970915f1ddad1b4d86
               isOk = isOk && true
             } else {
               isOk = isOk && false
@@ -607,11 +582,7 @@ export class FoctionnalitesComponent implements OnInit {
             this.isOk = true;
             this.topbar_info.printInfo(this.msg, this.isOk);
           } else {
-<<<<<<< HEAD
             this.msg = "Fichier non supprimé ! " + listNotOk
-=======
-            this.msg = "Fichier non supprimé !" + listNotOk
->>>>>>> 0cf26ca10d31fcab85ea35970915f1ddad1b4d86
             this.isOk = true;
             this.topbar_info.printInfo(this.msg, this.isOk);
           }
@@ -669,11 +640,7 @@ export class FoctionnalitesComponent implements OnInit {
         },
         (error) => { 
           this.displayError(error);
-<<<<<<< HEAD
           this.msg = "Attention votre fichier n'a pas été téléchargé ! Erreur : " + error.message + ". Regarder les logs";
-=======
-          this.msg = "Attention votre fichier n'a pas été téléchargé ! Erreur : " + error.message + ".";
->>>>>>> 0cf26ca10d31fcab85ea35970915f1ddad1b4d86
           this.isOk = false;
           this.topbar_info.printInfo(this.msg, this.isOk);
         });
