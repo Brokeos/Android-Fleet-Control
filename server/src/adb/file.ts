@@ -6,7 +6,7 @@ var logger = getLogger();
 
 export function pushFiles(devices: any, name: any, path: String){
 
-    let status: { [key: string]: string } = {};
+    let status: { [key: string]: any } = {};
     for (const device of devices) {
         try {
             execSync(`adb -s ${device} push ${name} ${path}`);
@@ -22,7 +22,7 @@ export function pushFiles(devices: any, name: any, path: String){
 
 export function deleteFile(devices: any, filePath:string){
 
-    let status: { [key: string]: string } = {};
+    let status: { [key: string]: any } = {};
     for (const device of devices) {
         try {
             const fileExists: string = execSync(`adb -s ${device} shell ls ${filePath}`).toString().replace("\n",'');
@@ -32,11 +32,11 @@ export function deleteFile(devices: any, filePath:string){
                 logger.log("info",device+`: Le fichier ${filePath} a été supprimé de l'appareil pas de l'appareil `);
             }
             else {
-                status[device] = status[device] = { status : "ERROR", msg : `Le fichier ${filePath} n'existe pas sur l'appareil ${device}` };
+                status[device]  = { status : "ERROR", msg : `Le fichier ${filePath} n'existe pas sur l'appareil ${device}` };
                 logger.log("warn",device+`: Le fichier ${filePath} n'existe pas sur l'appareil `);
             }
           } catch (error) {
-            status[device] = status[device] = { status : "ERROR", msg : `problème avec l'appareil ${error}` };
+            status[device] = { status : "ERROR", msg : `problème avec l'appareil ${error}` };
             logger.log("error", device+": problème avec l'appareil "  );
           }
     }
