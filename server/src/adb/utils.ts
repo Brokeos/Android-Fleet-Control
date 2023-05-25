@@ -105,7 +105,6 @@ export function shellCmd(device: string, cmds: string[]) {
     return adbProccess.stdout.toString();
 }
 
-
 export function syncDelay(milliseconds: number) {
     var start = new Date().getTime();
     var end = 0;
